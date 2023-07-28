@@ -30,7 +30,8 @@ async function performWebScraping() {
     manwhaContent.forEach((link) => {
       const series = {
         name: link.textContent,
-        link: link.href
+        link: link.href,
+        provider: "asura"
       }
       manwhaData.push(series);
     })

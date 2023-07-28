@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
-import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink, gql, useMutation } from '@apollo/client';
 import Header from './components/Header'; // Import the Header component
 
 // Interface to define the shape of each item in scrapedData
 interface ScrapedDataItem {
   name: string;
   link: string;
+  provider: string;
 }
 
 // Set up the Apollo Client
@@ -24,9 +25,31 @@ const App = () => {
       scrapedData {
         name
         link
+        provider
       }
     }
   `;
+
+  // Mutation query to add scraped data to the catalog
+  const ADD_SCRAPED_DATA_TO_CATALOG = gql`
+    mutation AddScrapedDataToCatalog {
+      addScrapedDataToCatalog {
+        success
+      }
+    }
+  `;
+
+  // Mutation hook for adding scraped data to the catalog
+  const [addScrapedDataToCatalog] = useMutation(ADD_SCRAPED_DATA_TO_CATALOG, {
+    onCompleted: async () => {
+      // After adding scraped data to the catalog, fetch the updated data
+      await fetchData();
+    },
+    onError: (error) => {
+      console.error('Error adding scraped data to catalog:', error);
+      setLoading(false);
+    },
+  });
 
   // State to store the fetched data
   const [scrapedData, setScrapedData] = useState<ScrapedDataItem[]>([]);
@@ -49,6 +72,7 @@ const App = () => {
     fetchData();
   }, []);
 
+  // Function to handle refreshing the data
   const handleRefresh = () => {
     fetchData();
   };
@@ -71,6 +95,7 @@ const App = () => {
               <View key={item.link}>
                 <Text>Name: {item.name}</Text>
                 <Text>Link: {item.link}</Text>
+                <Text>Provider: {item.provider}</Text>
               </View>
             ))
           )}

@@ -13,6 +13,14 @@ const typeDefs = gql`
   type Manwha {
     name: String
     link: String
+    provider: String
+  }
+
+  type StoryCatalog {
+    _id: ID!
+    title: String!
+    link: String!
+    provider: String!
   }
 
   type Story {
@@ -91,10 +99,12 @@ const typeDefs = gql`
     chapter(id: ID!): Chapter
     comments: [Comment]
     comment(id: ID!): Comment
+    getStoryCatalog: [StoryCatalog]
     scrapedData: [Manwha]
   }
 
   type Mutation {
+    addScrapedDataToCatalog: [StoryCatalog!]!
     createUser(input: CreateUserInput!): User
     createStory(input: CreateStoryInput!): Story
     createChapter(input: CreateChapterInput!): Chapter
