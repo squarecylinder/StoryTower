@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Node.js / NPM
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Editor-specific
+.idea/
+.vscode/
+
+# Build and dependencies
+/build/
+/vendor/
+
+# Environment variables
+.env
+
+# Android build files
+/android/app/build/
+
+# iOS build files
+/ios/Pods/
+/ios/build/
+
+# Jest test coverage
+/coverage/
