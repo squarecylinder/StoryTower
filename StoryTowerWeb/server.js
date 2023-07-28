@@ -34,6 +34,17 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../StoryTower/'))
 })
 
+// Define your API endpoint
+app.get('/scrape', async (req, res) => {
+  try {
+    const scrapedData = await performWebScraping();
+    res.send(scrapedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 // Start the server
 const startApolloServer = async () => {
@@ -51,4 +62,8 @@ const startApolloServer = async () => {
   }
 };
 
-startApolloServer();
+//startApolloServer();
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
