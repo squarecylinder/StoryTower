@@ -9,7 +9,7 @@ const Comment = require('../models/Comment');
 async function seed() {
   try {
     // Connect to the StoryTower database
-    await connection.connectToStoryTower();
+    await connection;
 
     // Clear existing data from the StoryTower database
     await mongoose.connection.dropDatabase();

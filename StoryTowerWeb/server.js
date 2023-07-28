@@ -88,13 +88,13 @@ const startApolloServer = async () => {
     await server.start();
     server.applyMiddleware({ app });
 
-    const dbConnection = await connection.connectToStoryTower();
+    // const dbConnection = await connection.connectToStoryTower();
 
-    dbConnection.on('error', (error) => {
-      console.error('Error in MongoDB connection:', error);
-    });
+    // dbConnection.on('error', (error) => {
+    //   console.error('Error in MongoDB connection:', error);
+    // });
 
-    dbConnection.once('open', () => {
+    connection.once('open', () => {
       console.log('Connected to MongoDB.');
       console.log(`API Server running on ${PORT}!`);
       console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
