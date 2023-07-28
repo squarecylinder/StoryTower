@@ -10,6 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.17",
+    "graphql": "^16.7.1",
     "puppeteer-core": "^20.9.0",
     "react": "18.2.0",
     "react-native": "0.72.3",

@@ -9,6 +9,11 @@ const typeDefs = gql`
     bookmarkedStories: [Story]
     readChapters: [Chapter]
   }
+  
+  type Manwha {
+    name: String
+    link: String
+  }
 
   type Story {
     _id: ID!
@@ -77,6 +82,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    me: User
     users: [User]
     user(id: ID!): User
     stories: [Story]
@@ -85,6 +91,7 @@ const typeDefs = gql`
     chapter(id: ID!): Chapter
     comments: [Comment]
     comment(id: ID!): Comment
+    scrapedData: [Manwha]
   }
 
   type Mutation {

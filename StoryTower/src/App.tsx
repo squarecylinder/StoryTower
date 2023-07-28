@@ -1,45 +1,50 @@
-// StoryTower/src/App.tsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink, useQuery, gql } from '@apollo/client';
 
 const App = () => {
-  const [scrapedData, setScrapedData] = useState('');
+  // Set up the Apollo Client
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+      uri: 'http://192.168.1.70:3001/graphql', // Replace with the correct API endpoint for your Apollo Server
+    }),
+  });
 
-  // Function to fetch the data from your backend server
-  const fetchData = async () => {
+  // GraphQL query to fetch the scraped data
+  const GET_SCRAPED_DATA = gql`
+    query {
+      scrapedData
+    }
+  `;
+
+  // Custom hook to fetch the data
+  const { loading, error, data, refetch } = useQuery(GET_SCRAPED_DATA);
+
+  const handleRefresh = async () => {
     try {
-      const response = await fetch('http://192.168.1.70:3000/scrape'); // Use the correct IP address here
-      const data = await response.text();
-      setScrapedData(data);
-
-      console.log('Scraped Data:', data.slice(0, 50)); // Log the first 50 characters of the data
+      await refetch();
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const handleRefresh = () => {
-    fetchData();
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.refreshButtonContainer}>
-        <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-          <Text style={styles.buttonText}>Refresh</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.contentContainer}>
-        <ScrollView style={styles.scrollContainer}>
-          <Text style={styles.title}>Scraped Data:</Text>
-          {scrapedData ? <Text>{scrapedData}</Text> : <Text>Loading...</Text>}
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+    <ApolloProvider client={client}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.refreshButtonContainer}>
+          <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+            <Text style={styles.buttonText}>Refresh</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.contentContainer}>
+          <ScrollView style={styles.scrollContainer}>
+            <Text style={styles.title}>Scraped Data:</Text>
+            {loading ? <Text>Loading...</Text> : <Text>{data?.scrapedData}</Text>}
+          </ScrollView>
+        </View>
+      </SafeAreaView>
+    </ApolloProvider>
   );
 };
 
