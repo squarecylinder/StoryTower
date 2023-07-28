@@ -8,11 +8,9 @@ const App = () => {
   // Function to fetch the data from your backend server
   const fetchData = async () => {
     try {
-      const response = await fetch('http://192.168.1.70:3000/scrape'); // Use the correct IP address here
+      const response = await fetch('http://192.168.1.70:3001/scrape'); // Use the correct IP address here
       const data = await response.text();
       setScrapedData(data);
-
-      console.log('Scraped Data:', data.slice(0, 50)); // Log the first 50 characters of the data
     } catch (error) {
       console.error('Error fetching data:', error);
     }
