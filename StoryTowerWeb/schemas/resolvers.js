@@ -15,7 +15,7 @@ const resolvers = {
       throw new AuthenticationError('Not Logged In');
     },
     scrapedData: async () => {
-      console.log("testing")
+      console.log('GraphQL query for scrapedData is executed!')
       try {
         const data = await performWebScraping();
         return data;
