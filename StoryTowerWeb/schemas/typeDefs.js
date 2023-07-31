@@ -18,7 +18,7 @@ const typeDefs = gql`
 
   type StoryCatalog {
     _id: ID!
-    title: String!
+    name: String!
     link: String!
     provider: String!
   }
