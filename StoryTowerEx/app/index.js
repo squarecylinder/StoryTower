@@ -11,7 +11,7 @@ const client = new ApolloClient({
   }),
 });
 
-const App = () => {
+const Index = () => {
   // GraphQL query to fetch the scraped data
   const GET_SCRAPED_DATA = gql`
     query ScrapedData {
@@ -135,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Index;

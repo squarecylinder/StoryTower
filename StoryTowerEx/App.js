@@ -1,6 +1,6 @@
 import React from 'react';
 import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
-import App from './app/App';
+import Index from './app/index';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -11,7 +11,7 @@ const client = new ApolloClient({
 
 const App = () => (
   <ApolloProvider client={client}>
-    <App />
+    <Index />
   </ApolloProvider>
 );
 
