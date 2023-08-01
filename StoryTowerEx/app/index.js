@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
-import { ApolloClient, InMemoryCache, HttpLink, gql, useMutation } from '@apollo/client';
+import { View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import { gql, useMutation } from '@apollo/client';
 import Header from './components/Header'; // Import the Header component
-
-// Set up the Apollo Client
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: new HttpLink({
-    uri: 'http://192.168.1.70:3001/graphql', // Replace with the correct API endpoint for your Apollo Server
-  }),
-});
+import client from './apolloClient'; // Import the Apollo client instance
 
 const Index = () => {
   // GraphQL query to fetch the scraped data
@@ -74,9 +67,9 @@ const Index = () => {
     <SafeAreaView style={styles.container}>
       <Header />
       <View style={styles.refreshButtonContainer}>
-        <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+        <Pressable style={styles.refreshButton} onPress={handleRefresh}>
           <Text style={styles.buttonText}>Refresh</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.contentContainer}>
         <ScrollView style={styles.scrollContainer}>
