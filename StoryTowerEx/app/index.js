@@ -2,51 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 import { gql, useMutation } from '@apollo/client';
 import Header from './components/Header'; // Import the Header component
-import client from './apolloClient'; // Import the Apollo client instance
+import client, { GET_STORY_CATALOG} from './apolloClient'; // Import the Apollo client instance
 
 const Index = () => {
-  // GraphQL query to fetch the scraped data
-  const GET_SCRAPED_DATA = gql`
-    query ScrapedData {
-      scrapedData {
-        name
-        link
-        provider
-      }
-    }
-  `;
-
-  // Mutation query to add scraped data to the catalog
-  const ADD_SCRAPED_DATA_TO_CATALOG = gql`
-    mutation AddScrapedDataToCatalog {
-      addScrapedDataToCatalog {
-        success
-      }
-    }
-  `;
-
-  // Mutation hook for adding scraped data to the catalog
-  const [addScrapedDataToCatalog] = useMutation(ADD_SCRAPED_DATA_TO_CATALOG, {
-    onCompleted: async () => {
-      // After adding scraped data to the catalog, fetch the updated data
-      await fetchData();
-    },
-    onError: (error) => {
-      console.error('Error adding scraped data to catalog:', error);
-      setLoading(false);
-    },
-  });
-
   // State to store the fetched data
-  const [scrapedData, setScrapedData] = useState([]);
+  const [storyCatalog, setStoryCatalog] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Function to fetch the data from the server
   const fetchData = async () => {
     try {
       setLoading(true);
-      const { data } = await client.query({ query: GET_SCRAPED_DATA });
-      setScrapedData(data.scrapedData);
+      const {data} = await client.query({ query: GET_STORY_CATALOG });
+      console.log(data.getStoryCatalog);
+      setStoryCatalog(data.getStoryCatalog);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -77,7 +46,7 @@ const Index = () => {
           {loading ? (
             <Text>Loading...</Text>
           ) : (
-            scrapedData.map((item) => (
+            storyCatalog.map((item) => (
               <View key={item.link}>
                 <Text>Name: {item.name}</Text>
                 <Text>Link: {item.link}</Text>
