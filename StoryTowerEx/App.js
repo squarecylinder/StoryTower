@@ -9,8 +9,10 @@ const client = new ApolloClient({
   }),
 });
 
-export default RootComponent = () => (
+const App = () => (
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>
 );
+
+export default App;
