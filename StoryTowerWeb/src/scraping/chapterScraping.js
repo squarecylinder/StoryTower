@@ -159,7 +159,7 @@ async function getStoryInformation(storyCatalogArray) {
 }
 
 async function scrapeChapterData(page, existingStory, chapterURL) {
-  const DELAY_BETWEEN_CHAPTERS = 5000;
+  // const DELAY_BETWEEN_CHAPTERS = 5000;
   try {
     while (chapterURL) {
       try {
@@ -210,7 +210,7 @@ async function scrapeChapterData(page, existingStory, chapterURL) {
           break;
         } else {
           chapterURL = await page.evaluate(el => el.href, nextButton);
-          await page.waitForTimeout(DELAY_BETWEEN_CHAPTERS)
+          // await page.waitForTimeout(DELAY_BETWEEN_CHAPTERS)
         }
       } catch (error) {
         console.error(`Error while scraping chapter for ${existingStory.title}`, error);
