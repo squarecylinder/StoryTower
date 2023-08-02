@@ -82,10 +82,6 @@ async function getStoryInformation(storyCatalogArray) {
         const lastChapterURL = lastChapterLinkElement ? await page.evaluate(el => el.href, lastChapterLinkElement) : null;
         console.log("Last Chapter URL: " + lastChapterURL);
 
-        let chapterTitleElement = await chapterElements[chapterElements.length - 1].$('.chapternum');
-        let chapterTitle = chapterTitleElement ? await page.evaluate(el => el.textContent, chapterTitleElement) : null;
-        console.log(chapterTitle)
-
         const totalChapters = chapterElements.length;
 
         console.log(`${story.name} exists in the database: ${!!existingStory}`);
@@ -100,130 +96,139 @@ async function getStoryInformation(storyCatalogArray) {
             }
 
             if (existingStory.chapters.length === 0) {
-              await scrapeChapterData(page, existingStory, chapterTitle, firstChapterURL);
+              await scrapeChapterData(page, existingStory, firstChapterURL);
             } else {
-              const lastChapterNumber = parseInt(existingStory.chapters[existingStory.chapters.length - 1].title.match(/Chapter (\d+)/)[1], 10);
-              for (let i = lastChapterNumber + 1; i <= totalChapters; i++) {
-                chapterTitle = `Chapter ${i}`;
-                const chapterIndex = i - 1;
-                const chapterURL = await page.evaluate(el => el.href, chapterElements[chapterIndex]);
-                try {
-                  await scrapeChapterData(page, existingStory, chapterTitle, chapterURL);
+              const lastChapterNumberOnSite = await page.evaluate(() => {
+                const chapterTitleElement = document.querySelector('.chapternum');
+                return parseInt(chapterTitleElement.textContent.match(/Chapter (\d+)/)[1], 10);
+              });
+              
+              // Get the last chapter number in the existingStory
+              const existingLastChapterNumber = parseInt(existingStory.chapters[existingStory.chapters.length - 1].title.match(/Chapter (\d+)/)[1], 10);
+              
+              const chapterDifference = lastChapterNumberOnSite - existingLastChapterNumber;
+              if (chapterDifference !== 0){
+                const chapterIndex = chapterDifference - 1;
+                const chapterURL = await page.evaluate(el => el.href, chapterElements[chapterIndex]);try {
+                  await scrapeChapterData(page, existingStory, chapterURL);
                 } catch (error) {
                   console.error(`Error while scraping chapter ${chapterTitle} for ${story.name}:`, error);
                 }
               }
+              // if (existingLastChapterNumber < lastChapterNumberOnSite) {
+              //   for (let i = existingLastChapterNumber + 1; i <= lastChapterNumberOnSite; i++) {
+              //     const chapterIndex = totalChapters - i;
+              //     const chapterURL = await page.evaluate(el => el.href, chapterElements[chapterIndex]);
+              //     try {
+              //       await scrapeChapterData(page, existingStory, chapterURL);
+              //     } catch (error) {
+              //       console.error(`Error while scraping chapter ${chapterTitle} for ${story.name}:`, error);
+              //     }
+              //   }
+              // }
             }
+            } else {
+              const newStory = new Story({
+                title: story.name,
+                rating: 0,
+                lastUpdated: new Date(),
+                chapterCount: totalChapters,
+                synopsis: synopsisText,
+                genres: genres, // Assuming the story link is the unique identifier
+                chapters: [], // An array to store chapter references (you can update this as needed)
+                coverArt: coverArtSrc,
+              });
+              try {
+                await newStory.save();
+                console.log(`${newStory} saved to the database.`);
+                await scrapeChapterData(page, existingStory, chapterTitle, firstChapterURL);
+              } catch (error) {
+                console.error('Error while saving new story or scraping chapters:', error);
+              }
+            }
+          } catch (error) {
+            console.error('Error while processing story:', error);
+          }
+        }
+    }
+    } catch (error) {
+      console.error('Error while fetching story links:', error);
+    } finally {
+      console.log('Completed');
+      await browser.close();
+    }
+  }
+
+async function scrapeChapterData(page, existingStory, chapterURL) {
+    const DELAY_BETWEEN_CHAPTERS = 5000;
+    try {
+      while (chapterURL) {
+        try {
+          // Navigate to the chapter page using the provided URL
+          await page.goto(chapterURL, { timeout: 60000 });
+
+          // Step 1: Get the chapter content element
+          const chapterContentElement = await page.$('#readerarea');
+          const chapterTitleElement = await page.$('.entry-title');
+          let chapterTitle = await chapterTitleElement.evaluate((el) => el.innerText.trim());
+
+          // Extract the chapter number from the selected option value (if needed)
+          // Step 2: Extract the image URLs
+          const imageElements = await chapterContentElement.$$('img');
+          const imageUrls = await Promise.all(
+            imageElements.map(async (element) => {
+              const imageUrl = await element.evaluate((el) => el.src);
+              return imageUrl;
+            })
+          );
+
+          // Step 3: Save the images to the database
+          const newChapter = new Chapter({
+            title: chapterTitle, // Use the extracted chapter title
+            images: imageUrls, // Save the image URLs as an array of strings
+            story: existingStory._id
+          });
+
+          await newChapter.save();
+          // Step 4: Associate the chapter with the story
+          existingStory.chapters.push(newChapter);
+          await existingStory.save();
+          console.log(`Saved ${chapterTitle} to ${existingStory.title}.`)
+
+          try {
+            // Click the "Next" button to navigate to the next chapter page
+            await page.goto(chapterURL); // Re-visit the chapter page URL to navigate to the next chapter
+          } catch (error) {
+            console.error(`Error while navigating to the next chapter page for ${existingStory.title}`, error);
+            break; // Exit the loop if there's an error in navigation
+          }
+          // Check if the "Next" button is disabled (indicating no more chapters)
+          const nextButton = await page.$('.ch-next-btn');
+          const isNextButtonDisabled = await nextButton.evaluate((btn) => btn.classList.contains('disabled'));
+          console.log(`Next button???? ${nextButton}`);
+          if (isNextButtonDisabled) {
+            console.log(`No more chapters to scrape for ${existingStory.title}`);
+            break;
           } else {
-            const newStory = new Story({
-              title: story.name,
-              rating: 0,
-              lastUpdated: new Date(),
-              chapterCount: totalChapters,
-              synopsis: synopsisText,
-              genres: genres, // Assuming the story link is the unique identifier
-              chapters: [], // An array to store chapter references (you can update this as needed)
-              coverArt: coverArtSrc,
-            });
-            try {
-              await newStory.save();
-              console.log('Story saved to the database.');
-              await scrapeChapterData(page, existingStory, chapterTitle, firstChapterURL);
-            } catch (error) {
-              console.error('Error while saving new story or scraping chapters:', error);
-            }
+            chapterURL = await page.evaluate(el => el.href, nextButton);
+            await page.waitForTimeout(DELAY_BETWEEN_CHAPTERS)
           }
         } catch (error) {
-          console.error('Error while processing story:', error);
+          console.error(`Error while scraping chapter for ${existingStory.title}`, error);
         }
       }
+    } catch (error) {
+      console.error('Error while scraping chapters:', error);
     }
-  } catch (error) {
-    console.error('Error while fetching story links:', error);
-  } finally {
-    console.log('Completed');
-    await browser.close();
   }
-}
-
-async function scrapeChapterData(page, existingStory, story, chapterURL) {
-  const DELAY_BETWEEN_CHAPTERS = 5000;
-  console.log("Starting scrape chapter");
-  try {
-    while (chapterURL) {
-      console.log("In the While Loop");
-      try {
-        let currentURL = await page.url();
-        console.log(`Navigating to ${chapterURL} from ${currentURL}`);
-        // Navigate to the chapter page using the provided URL
-        await page.goto(chapterURL, { timeout: 60000 });
-        currentURL = await page.url()
-        console.log(`Current URL is now: ${currentURL}`);
-
-        // Step 1: Get the chapter content element
-        const chapterContentElement = await page.$('#readerarea');
-        const chapterTitleElement = await page.$('.entry-title');
-        let chapterTitle = await chapterTitleElement.evaluate((el) => el.innerText.trim());
-        chapterTitle = chapterTitle.replace(story.name, '').trim();
-
-        // Extract the chapter number from the selected option value (if needed)
-        // Step 2: Extract the image URLs
-        const imageElements = await chapterContentElement.$$('img');
-        const imageUrls = await Promise.all(
-          imageElements.map(async (element) => {
-            const imageUrl = await element.evaluate((el) => el.src);
-            return imageUrl;
-          })
-        );
-
-        // Step 3: Save the images to the database
-        const newChapter = new Chapter({
-          title: chapterTitle, // Use the extracted chapter title
-          images: imageUrls, // Save the image URLs as an array of strings
-          story: existingStory._id
-        });
-
-        await newChapter.save();
-        console.log("Should save a new chapter?")
-        // Step 4: Associate the chapter with the story
-        existingStory.chapters.push(newChapter);
-        await existingStory.save();
-        console.log("Should save to a story")
-
-        try {
-          // Click the "Next" button to navigate to the next chapter page
-          await page.goto(chapterURL); // Re-visit the chapter page URL to navigate to the next chapter
-        } catch (error) {
-          console.error(`Error while navigating to the next chapter page for ${story.name}`, error);
-          break; // Exit the loop if there's an error in navigation
-        }
-        // Check if the "Next" button is disabled (indicating no more chapters)
-        const nextButton = await page.$('.ch-next-btn');
-        const isNextButtonDisabled = await nextButton.evaluate((btn) => btn.classList.contains('disabled'));
-        console.log(`Next button???? ${nextButton}`);
-        if (isNextButtonDisabled) {
-          console.log(`No more chapters to scrape for ${story.name}`);
-          break;
-        } else {
-          chapterURL = await page.evaluate(el => el.href, nextButton);
-          await page.waitForTimeout(DELAY_BETWEEN_CHAPTERS)
-        }
-      } catch (error) {
-        console.error(`Error while scraping chapter for ${story.name}`, error);
-      }
-    }
-  } catch (error) {
-    console.error('Error while scraping chapters:', error);
-  }
-}
 
 
 
-// Call the function to get the links
-getStoryCatalogInformation()
-  .then((storyCatalogArray) => {
-    getStoryInformation(storyCatalogArray);
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
+  // Call the function to get the links
+  getStoryCatalogInformation()
+    .then((storyCatalogArray) => {
+      getStoryInformation(storyCatalogArray);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
