@@ -1,6 +1,7 @@
 // StoryTowerWeb/models/Chapter.js
 const mongoose = require('mongoose');
 const Comment = require('./Comment'); // Import the Comment model
+const Story = require('./Story'); // Import the Story model
 
 const chapterSchema = new mongoose.Schema({
   title: {
@@ -15,8 +16,15 @@ const chapterSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Comment',
   }],
+  story: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Story',
+    required: true,
+  },
   // Any other chapter-related fields you may need
 });
+
+chapterSchema.index({ title: 1, story: 1 }, { unique: true }); // Ensure chapter title is unique per story
 
 const Chapter = mongoose.model('Chapter', chapterSchema);
 

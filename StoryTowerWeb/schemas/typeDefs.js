@@ -40,6 +40,7 @@ const typeDefs = gql`
     title: String!
     images: [String]
     comments: [Comment]
+    story: Story
   }
 
   type Comment {
