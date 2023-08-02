@@ -45,6 +45,9 @@ const storySchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  coverArt: {
+    type: String, // String data type to store the image URL
+  },
 });
 
 storySchema.methods.calculateAverageRating = function () {

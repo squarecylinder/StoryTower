@@ -32,6 +32,7 @@ const typeDefs = gql`
     synopsis: String
     genres: [String]
     chapters: [Chapter]
+    coverArt: [String]
   }
 
   type Chapter {
