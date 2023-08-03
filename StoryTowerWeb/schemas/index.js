@@ -1,4 +1,4 @@
 const typeDefs = require('./typeDefs');
-const {resolvers, addScrapedDataToCatalog} = require('./resolvers');
+const resolvers = require('./resolvers');
 
-module.exports = { typeDefs, resolvers, addScrapedDataToCatalog };
+module.exports = { typeDefs, resolvers };

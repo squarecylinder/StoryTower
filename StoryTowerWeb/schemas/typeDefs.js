@@ -102,7 +102,6 @@ const typeDefs = gql`
     comments: [Comment]
     comment(id: ID!): Comment
     getStoryCatalog: [StoryCatalog]
-    scrapedData: [Manwha]
   }
 
   type Mutation {

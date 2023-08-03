@@ -1,37 +1,7 @@
 const { AuthenticationError } = require('apollo-server-express');
-// const { performAsuraCatalogScraping } = require('../src/scraping/asuraCatalogScraper');
-// const { performAsuraChapterScraping } = require('../src/scraping/asuraChapterScraper');
 const { User, Story, Comment, Chapter, StoryCatalog } = require('../models');
 const { signToken } = require('../utils/auth');
-
-const addScrapedDataToCatalog = async ({ scrapedData }) => {
-  console.log('GraphQL mutation for adding scraped data to catalog is executed!');
-  try {
-    for (const data of scrapedData) {
-      const existingData = await StoryCatalog.findOne({
-        link: data.link,
-        provider: data.provider,
-      });
-
-      if (!existingData) {
-        // Document does not exist, save the data
-        await StoryCatalog.create({
-          name: data.name,
-          link: data.link,
-          provider: data.provider,
-        });
-      } else {
-        // Document already exists, skip saving
-        console.log(`Data with link: ${data.link} and provider: ${data.provider} already exists.`);
-      }
-    }
-
-    return true; // Indicate that the data was successfully processed
-  } catch (error) {
-    console.error('Error saving scraped data to catalog:', error);
-    throw new Error('Internal Server Error');
-  }
-};
+const { addScrapedDataToCatalog } = require('./mutations'); // Import the mutation function
 
 const resolvers = {
   Query: {
@@ -44,20 +14,6 @@ const resolvers = {
       }
       throw new AuthenticationError('Not Logged In');
     },
-    // scrapedData: async () => {
-    //   console.log('GraphQL query for scrapedData is executed!')
-    //   try {
-    //     const data = await performAsuraCatalogScraping();
-
-    //     // Call the mutation resolver to save the scraped data into the StoryCatalog model
-    //     await addScrapedDataToCatalog({ scrapedData: data });
-
-    //     return data;
-    //   } catch (error) {
-    //     console.error('Error scraping data:', error);
-    //     throw new Error('Internal Server Error');
-    //   }
-    // },
     getStoryCatalog: async () => {
       try {
         const storyCatalog = await StoryCatalog.find();
@@ -106,7 +62,4 @@ const resolvers = {
   },
 };
 
-module.exports = {
-  resolvers,
-  addScrapedDataToCatalog
-};
+module.exports = resolvers
