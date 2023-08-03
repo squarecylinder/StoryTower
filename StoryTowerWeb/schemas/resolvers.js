@@ -1,6 +1,6 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { performWebScraping } = require('../src/scraping/webScraper');
-const { getChapterLinksAndImages, getStoryLinksFromCatalog } = require('../src/scraping/chapterScraping');
+// const { performAsuraCatalogScraping } = require('../src/scraping/asuraCatalogScraper');
+// const { performAsuraChapterScraping } = require('../src/scraping/asuraChapterScraper');
 const { User, Story, Comment, Chapter, StoryCatalog } = require('../models');
 const { signToken } = require('../utils/auth');
 
@@ -44,20 +44,20 @@ const resolvers = {
       }
       throw new AuthenticationError('Not Logged In');
     },
-    scrapedData: async () => {
-      console.log('GraphQL query for scrapedData is executed!')
-      try {
-        const data = await performWebScraping();
+    // scrapedData: async () => {
+    //   console.log('GraphQL query for scrapedData is executed!')
+    //   try {
+    //     const data = await performAsuraCatalogScraping();
 
-        // Call the mutation resolver to save the scraped data into the StoryCatalog model
-        await addScrapedDataToCatalog({ scrapedData: data });
+    //     // Call the mutation resolver to save the scraped data into the StoryCatalog model
+    //     await addScrapedDataToCatalog({ scrapedData: data });
 
-        return data;
-      } catch (error) {
-        console.error('Error scraping data:', error);
-        throw new Error('Internal Server Error');
-      }
-    },
+    //     return data;
+    //   } catch (error) {
+    //     console.error('Error scraping data:', error);
+    //     throw new Error('Internal Server Error');
+    //   }
+    // },
     getStoryCatalog: async () => {
       try {
         const storyCatalog = await StoryCatalog.find();
@@ -106,4 +106,7 @@ const resolvers = {
   },
 };
 
-module.exports = resolvers;
+module.exports = {
+  resolvers,
+  addScrapedDataToCatalog
+};

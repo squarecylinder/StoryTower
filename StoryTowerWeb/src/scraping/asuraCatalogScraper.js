@@ -2,7 +2,8 @@
 const puppeteer = require('puppeteer-core');
 const os = require('os');
 
-async function performWebScraping() {
+async function performAsuraCatalogScraping() {
+  console.log('Checking Asura.gg catalog...');
   let executablePath;
 
     // Determine the appropriate executable path based on the current environment
@@ -45,5 +46,5 @@ async function performWebScraping() {
 }
 
 module.exports = {
-  performWebScraping,
+  performAsuraCatalogScraping,
 };

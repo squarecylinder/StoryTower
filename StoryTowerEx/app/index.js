@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
-import { gql, useMutation } from '@apollo/client';
 import Header from './components/Header'; // Import the Header component
 import client, { GET_STORY_CATALOG} from './apolloClient'; // Import the Apollo client instance
 
