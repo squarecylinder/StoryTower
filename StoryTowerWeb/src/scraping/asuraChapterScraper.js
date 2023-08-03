@@ -1,6 +1,6 @@
 // chapterScraping.js
 const puppeteer = require('puppeteer-core');
-const os = require('os');
+const {executablePath} = require('./executablePath')
 const { Story, StoryCatalog, Chapter } = require('../../models');
 
 async function performAsuraChapterScraping() {
@@ -25,22 +25,7 @@ async function performAsuraChapterScraping() {
 
   // Function to fetch the chapter links and images from a given story link
   async function getStoryInformation(storyCatalogArray) {
-    let executablePath;
-
-    // Determine the appropriate executable path based on the current environment
-    if (os.platform() === 'darwin') {
-      // Mac path
-      executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-    } else if (os.platform() === 'win32') {
-      // Windows path
-      executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    } else {
-      throw new Error('Unsupported platform');
-    }
-
-    const browser = await puppeteer.launch({
-      executablePath: executablePath,
-    });
+    const browser = await puppeteer.launch({ executablePath: executablePath});
     const page = await browser.newPage();
 
     try {

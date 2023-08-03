@@ -1,25 +1,10 @@
 // webScraper.js
 const puppeteer = require('puppeteer-core');
-const os = require('os');
+const {executablePath} = require('./executablePath')
 
 async function performAsuraCatalogScraping() {
   console.log('Checking Asura.gg catalog...');
-  let executablePath;
-
-    // Determine the appropriate executable path based on the current environment
-    if (os.platform() === 'darwin') {
-      // Mac path
-      executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-    } else if (os.platform() === 'win32') {
-      // Windows path
-      executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-    } else {
-      throw new Error('Unsupported platform');
-    }
-
-  const browser = await puppeteer.launch({
-    executablePath: executablePath,
-  });
+  const browser = await puppeteer.launch({ executablePath: executablePath});
   const page = await browser.newPage();
   await page.goto('https://asura.gg/manga/list-mode');
 
