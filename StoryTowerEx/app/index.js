@@ -38,8 +38,9 @@ const formatData = (data, numColumns) => {
   let amountItemsLastRow = formattedData.length - amountFullRows * numColumns;
 
   // If there are not enough items to fill the last row, remove empty slots
-  if (amountItemsLastRow !== numColumns && amountItemsLastRow !== 0) {
-    formattedData.splice(-amountItemsLastRow);
+  while (amountItemsLastRow !== numColumns && amountItemsLastRow !== 0) {
+    data.push({key: `empty-${amountItemsLastRow}`, empty: true});
+    amountItemsLastRow++;
   }
 
   return formattedData;
