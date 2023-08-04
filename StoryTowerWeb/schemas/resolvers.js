@@ -14,10 +14,18 @@ const resolvers = {
       }
       throw new AuthenticationError('Not Logged In');
     },
-    getStories: async () => {
+    getStories: async (_, { offset = 0, limit = 10 }) => {
       try {
-        const stories = await Story.find();
-        return stories;
+         // Use the offset and limit in the find query
+         const stories = await Story.find().skip(offset).limit(limit);
+
+         // Get the total number of stories without pagination
+         const totalStories = await Story.countDocuments();
+ 
+         return {
+           data: stories,
+           totalStories,
+         };
       } catch (error) {
         console.error('Error fetching Stories:', error);
         throw new Error('Internal Server Error');

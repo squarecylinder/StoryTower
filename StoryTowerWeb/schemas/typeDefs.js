@@ -35,6 +35,11 @@ const typeDefs = gql`
     coverArt: String
   }
 
+  type StoryPagination {
+    data: [Story!]!
+    totalStories: Int!
+  }
+
   type Chapter {
     _id: ID!
     title: String!
@@ -95,7 +100,7 @@ const typeDefs = gql`
     me: User
     users: [User]
     user(id: ID!): User
-    getStories: [Story]
+    getStories(offset: Int, limit: Int): StoryPagination!
     story(id: ID!): Story
     chapters: [Chapter]
     chapter(id: ID!): Chapter

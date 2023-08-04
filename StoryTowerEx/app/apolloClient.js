@@ -20,13 +20,16 @@ export const GET_STORY_CATALOG = gql`
 `;
 
 export const GET_STORIES = gql`
-  query getStories {
-    getStories {
+query getStories($offset: Int, $limit: Int) {
+  getStories(offset: $offset, limit: $limit) {
+    data {
       _id
       coverArt
       title
     }
-  }
+  totalStories
+}
+}
 `;
 
 export default client;

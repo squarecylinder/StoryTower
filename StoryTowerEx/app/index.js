@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet, SafeAreaView, FlatList, Image, useWindowDimensions } from 'react-native';
-import Header from './components/Header'; // Import the Header component
-import client, { GET_STORIES } from './apolloClient'; // Import the Apollo client instance
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  Image,
+  useWindowDimensions,
+} from 'react-native';
+import Header from './components/Header';
+import client, { GET_STORIES } from './apolloClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const minCols = 2;
+const PAGE_SIZE = 24;
+const minCols = 1;
 
 const calcNumColumns = (width) => {
-  const cols = width / 200; // Assuming each item width is 90 (based on the example)
+  const cols = width / 200;
   const colsFloor = Math.floor(cols) > minCols ? Math.floor(cols) : minCols;
-  const colsMinusMargin = cols - (2 * colsFloor * 1); // Assuming margin of 1 (based on the example)
+  const colsMinusMargin = cols - 2 * colsFloor * 1;
 
   if (colsMinusMargin < colsFloor && colsFloor > minCols) {
     return colsFloor - 1;
@@ -18,10 +29,15 @@ const calcNumColumns = (width) => {
 };
 
 const formatData = (data, numColumns) => {
-  const formattedData = [...data]; // Create a new array using the spread operator
+  console.log("TEST")
+  if (!Array.isArray(data)) {
+    return []; // Return an empty array if data is not valid
+  }
+
+  const formattedData = [...data];
   const amountFullRows = Math.floor(formattedData.length / numColumns);
   let amountItemsLastRow = formattedData.length - amountFullRows * numColumns;
- console.log(amountItemsLastRow)
+
   while (amountItemsLastRow !== numColumns && amountItemsLastRow !== 0) {
     formattedData.push({ key: `empty-${amountItemsLastRow}`, empty: true });
     amountItemsLastRow++;
@@ -29,20 +45,34 @@ const formatData = (data, numColumns) => {
   return formattedData;
 };
 
-
 const Index = () => {
-  // State to store the fetched data
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { width } = useWindowDimensions();
   const [numColumns, setNumColumns] = useState(calcNumColumns(width));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [initialRender, setInitialRender] = useState(true);
+  const [formattedData, setFormattedData] = useState([]);
+  const { width } = useWindowDimensions();
+  const hideImages = width < 500;
+  
 
-  // Function to fetch the data from the server
-  const fetchData = async () => {
+  const fetchData = async (page = 1) => {
     try {
       setLoading(true);
-      const { data } = await client.query({ query: GET_STORIES });
+      const offset = (page - 1) * 24; // Calculate the offset based on the selected page
+      const { data } = await client.query({
+        query: GET_STORIES,
+        variables: { offset, limit: 24 }, // Pass the offset and limit as variables
+      });
       setStories(data.getStories);
+      setTotalPages(Math.ceil(data.getStories.totalStories / 24)); // Update total pages
+      setCurrentPage(page); // Update current page
+  
+      // Save the current page in AsyncStorage
+      await AsyncStorage.setItem('currentPage', page.toString());
+      // Update formatted data based on the fetched data
+      setFormattedData(formatData(data.getStories.data, numColumns));
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -51,25 +81,60 @@ const Index = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!initialRender) {
+      fetchData(currentPage); // Only call fetchData if not the initial render
+    } else {
+      setInitialRender(false);
+    }
+  }, [currentPage]);
 
   useEffect(() => {
     setNumColumns(calcNumColumns(width));
   }, [width]);
 
-  // Function to handle refreshing the data
-  const handleRefresh = () => {
-    fetchData();
+  useEffect(() => {
+    handleRefresh(); // Fetch data for the current or stored page when the component mounts
+  }, []);
+
+  const handleRefresh = async () => {
+    try {
+      const storedPage = await AsyncStorage.getItem('currentPage');
+      const page = storedPage ? Number(storedPage) : currentPage;
+      fetchData(page); // Fetch data for the current page or the stored page
+    } catch (error) {
+      console.error('Error retrieving data from AsyncStorage:', error);
+    }
   };
 
-  // Function to render each story item in the FlatList
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
   const renderStoryItem = ({ item }) => (
     <View key={item._id} style={styles.item}>
-      <Image source={{ uri: item.coverArt }} style={styles.coverArt} resizeMode="contain" />
+      {!hideImages && (
+        <Image source={{ uri: item.coverArt }} style={styles.coverArt} resizeMode="contain" />
+      )}
       <Text style={styles.itemText}>{item.title}</Text>
     </View>
   );
+
+  const renderPagination = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(
+        <Pressable
+          key={i}
+          style={styles.paginationButton}
+          onPress={() => handlePageClick(i)}
+          android_ripple={{ color: 'lightgray', borderless: true }}
+        >
+          <Text style={styles.paginationButtonText}>{i}</Text>
+        </Pressable>
+      );
+    }
+    return pages;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -82,7 +147,7 @@ const Index = () => {
       <View style={styles.contentContainer}>
         <FlatList
           key={numColumns}
-          data={formatData(stories, numColumns)}
+          data={formattedData}
           numColumns={numColumns}
           renderItem={renderStoryItem}
           keyExtractor={(item) => item._id}
@@ -90,6 +155,28 @@ const Index = () => {
           ListEmptyComponent={<Text>Loading...</Text>}
           refreshing={loading}
           onRefresh={handleRefresh}
+          // Add the pagination buttons inside the ListFooterComponent
+          ListFooterComponent={
+            <View style={styles.paginationContainer}>
+              <Pressable
+                style={styles.paginationButton}
+                onPress={() => handlePageClick(currentPage - 1)}
+                android_ripple={{ color: 'lightgray', borderless: true }}
+                disabled={currentPage === 1}
+              >
+                <Text style={styles.paginationButtonText}>{"<<"}</Text>
+              </Pressable>
+              {renderPagination()}
+              <Pressable
+                style={styles.paginationButton}
+                onPress={() => handlePageClick(currentPage + 1)}
+                android_ripple={{ color: 'lightgray', borderless: true }}
+                disabled={currentPage === totalPages}
+              >
+                <Text style={styles.paginationButtonText}>{">>"}</Text>
+              </Pressable>
+            </View>
+          }
         />
       </View>
     </SafeAreaView>
@@ -132,7 +219,8 @@ const styles = StyleSheet.create({
     margin: 1,
     height: 300,
     width: 200,
-    padding: 10
+    padding: 10,
+    minWidth: 250, // Add the minWidth property to prevent overlapping at small screen sizes
   },
   itemText: {
     color: '#fff',
@@ -141,9 +229,24 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     marginBottom: 0,
+    '@media (max-width: 500px)': {
+      display: 'none', // Hide the cover art when screen size is below 500 pixels
+    },
   },
   itemTransparent: {
     backgroundColor: 'transparent',
+  },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+  paginationButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  paginationButtonText: {
+    fontSize: 16,
   },
 });
 
