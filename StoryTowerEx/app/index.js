@@ -29,7 +29,6 @@ const calcNumColumns = (width) => {
 };
 
 const formatData = (data, numColumns) => {
-  console.log("TEST")
   if (!Array.isArray(data)) {
     return []; // Return an empty array if data is not valid
   }
@@ -38,21 +37,22 @@ const formatData = (data, numColumns) => {
   const amountFullRows = Math.floor(formattedData.length / numColumns);
   let amountItemsLastRow = formattedData.length - amountFullRows * numColumns;
 
-  while (amountItemsLastRow !== numColumns && amountItemsLastRow !== 0) {
-    formattedData.push({ key: `empty-${amountItemsLastRow}`, empty: true });
-    amountItemsLastRow++;
+  // If there are not enough items to fill the last row, remove empty slots
+  if (amountItemsLastRow !== numColumns && amountItemsLastRow !== 0) {
+    formattedData.splice(-amountItemsLastRow);
   }
+
   return formattedData;
 };
 
 const Index = () => {
-  const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [numColumns, setNumColumns] = useState(calcNumColumns(width));
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [initialRender, setInitialRender] = useState(true);
   const [formattedData, setFormattedData] = useState([]);
+  const [storiesByPage, setStoriesByPage] = useState({});
   const { width } = useWindowDimensions();
   const hideImages = width < 500;
   
@@ -60,25 +60,23 @@ const Index = () => {
   const fetchData = async (page = 1) => {
     try {
       setLoading(true);
-      const offset = (page - 1) * 24; // Calculate the offset based on the selected page
+      const offset = (page - 1) * 24;
       const { data } = await client.query({
         query: GET_STORIES,
-        variables: { offset, limit: 24 }, // Pass the offset and limit as variables
+        variables: { offset, limit: 24 },
       });
-      setStories(data.getStories);
-      setTotalPages(Math.ceil(data.getStories.totalStories / 24)); // Update total pages
-      setCurrentPage(page); // Update current page
   
-      // Save the current page in AsyncStorage
-      await AsyncStorage.setItem('currentPage', page.toString());
-      // Update formatted data based on the fetched data
       setFormattedData(formatData(data.getStories.data, numColumns));
+      setTotalPages(Math.ceil(data.getStories.totalStories / 24));
+      setCurrentPage(page);
+      await AsyncStorage.setItem('currentPage', page.toString());
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (!initialRender) {
@@ -86,10 +84,13 @@ const Index = () => {
     } else {
       setInitialRender(false);
     }
-  }, [currentPage]);
+  }, [currentPage, initialRender]);
 
   useEffect(() => {
-    setNumColumns(calcNumColumns(width));
+    const newNumColumns = calcNumColumns(width);
+    if (numColumns !== newNumColumns) {
+      setNumColumns(newNumColumns);
+    }
   }, [width]);
 
   useEffect(() => {
@@ -119,22 +120,58 @@ const Index = () => {
     </View>
   );
 
+  const renderPaginationButton = (page) => (
+    <Pressable
+      key={page}
+      style={styles.paginationButton}
+      onPress={() => handlePageClick(page)}
+      android_ripple={{ color: 'lightgray', borderless: true }}
+    >
+      <Text style={styles.paginationButtonText}>{page}</Text>
+    </Pressable>
+  );
+
   const renderPagination = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <Pressable
-          key={i}
-          style={styles.paginationButton}
-          onPress={() => handlePageClick(i)}
-          android_ripple={{ color: 'lightgray', borderless: true }}
-        >
-          <Text style={styles.paginationButtonText}>{i}</Text>
-        </Pressable>
-      );
+      pages.push(renderPaginationButton(i));
     }
     return pages;
   };
+
+  const flatListProps = {
+    key: numColumns,
+    data: formattedData,
+    numColumns,
+    renderItem: renderStoryItem,
+    keyExtractor: (item) => item._id,
+    contentContainerStyle: styles.scrollContainer,
+    ListEmptyComponent: <Text>Loading...</Text>,
+    refreshing: loading,
+    onRefresh: handleRefresh,
+    ListFooterComponent: (
+      <View style={styles.paginationContainer}>
+        <Pressable
+          style={styles.paginationButton}
+          onPress={() => handlePageClick(currentPage - 1)}
+          android_ripple={{ color: 'lightgray', borderless: true }}
+          disabled={currentPage === 1}
+        >
+          <Text style={styles.paginationButtonText}>{"<<"}</Text>
+        </Pressable>
+        {renderPagination()}
+        <Pressable
+          style={styles.paginationButton}
+          onPress={() => handlePageClick(currentPage + 1)}
+          android_ripple={{ color: 'lightgray', borderless: true }}
+          disabled={currentPage === totalPages}
+        >
+          <Text style={styles.paginationButtonText}>{">>"}</Text>
+        </Pressable>
+      </View>
+    ),
+  };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -145,39 +182,7 @@ const Index = () => {
         </Pressable>
       </View>
       <View style={styles.contentContainer}>
-        <FlatList
-          key={numColumns}
-          data={formattedData}
-          numColumns={numColumns}
-          renderItem={renderStoryItem}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.scrollContainer}
-          ListEmptyComponent={<Text>Loading...</Text>}
-          refreshing={loading}
-          onRefresh={handleRefresh}
-          // Add the pagination buttons inside the ListFooterComponent
-          ListFooterComponent={
-            <View style={styles.paginationContainer}>
-              <Pressable
-                style={styles.paginationButton}
-                onPress={() => handlePageClick(currentPage - 1)}
-                android_ripple={{ color: 'lightgray', borderless: true }}
-                disabled={currentPage === 1}
-              >
-                <Text style={styles.paginationButtonText}>{"<<"}</Text>
-              </Pressable>
-              {renderPagination()}
-              <Pressable
-                style={styles.paginationButton}
-                onPress={() => handlePageClick(currentPage + 1)}
-                android_ripple={{ color: 'lightgray', borderless: true }}
-                disabled={currentPage === totalPages}
-              >
-                <Text style={styles.paginationButtonText}>{">>"}</Text>
-              </Pressable>
-            </View>
-          }
-        />
+      <FlatList {...flatListProps} />
       </View>
     </SafeAreaView>
   );
@@ -219,8 +224,7 @@ const styles = StyleSheet.create({
     margin: 1,
     height: 300,
     width: 200,
-    padding: 10,
-    minWidth: 250, // Add the minWidth property to prevent overlapping at small screen sizes
+    padding: 10, // Add the minWidth property to prevent overlapping at small screen sizes
   },
   itemText: {
     color: '#fff',
