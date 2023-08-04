@@ -14,12 +14,12 @@ const resolvers = {
       }
       throw new AuthenticationError('Not Logged In');
     },
-    getStoryCatalog: async () => {
+    getStories: async () => {
       try {
-        const storyCatalog = await StoryCatalog.find();
-        return storyCatalog;
+        const stories = await Story.find();
+        return stories;
       } catch (error) {
-        console.error('Error fetching StoryCatalog:', error);
+        console.error('Error fetching Stories:', error);
         throw new Error('Internal Server Error');
       }
     },

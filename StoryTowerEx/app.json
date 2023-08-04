@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "010d929b-5212-422a-b3b0-ed58cce2ba04"
+      }
+    },
+    "android": {
+      "package": "com.squarecylinder.storytowerex"
+    },
+    "ios": {
+      "bundleIdentifier": "com.squarecylinder.storytowerex"
+    }
+  }
+}

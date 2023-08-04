@@ -41,7 +41,7 @@ const startApolloServer = async () => {
       console.log('Connected to MongoDB.');
       // Start Apollo Server after the MongoDB connection is open
       app.listen(PORT, () => {
-        console.log(`API Server running at http://localhost:${PORT}${server.graphqlPath}`);
+        console.log(`API Server running at http://${process.env.SERVER_IP}:${PORT}${server.graphqlPath}`);
       });
     });
   } catch (error) {

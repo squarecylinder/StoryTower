@@ -32,7 +32,7 @@ const typeDefs = gql`
     synopsis: String
     genres: [String]
     chapters: [Chapter]
-    coverArt: [String]
+    coverArt: String
   }
 
   type Chapter {
@@ -95,7 +95,7 @@ const typeDefs = gql`
     me: User
     users: [User]
     user(id: ID!): User
-    stories: [Story]
+    getStories: [Story]
     story(id: ID!): Story
     chapters: [Chapter]
     chapter(id: ID!): Chapter
