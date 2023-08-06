@@ -10,6 +10,15 @@
     },
     "ios": {
       "bundleIdentifier": "com.squarecylinder.storytowerex"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/010d929b-5212-422a-b3b0-ed58cce2ba04"
     }
   }
 }
