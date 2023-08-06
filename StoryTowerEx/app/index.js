@@ -72,7 +72,7 @@ const Index = () => {
       setCurrentPage(page);
       await AsyncStorage.setItem('currentPage', page.toString());
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error.message);
     } finally {
       setLoading(false);
     }

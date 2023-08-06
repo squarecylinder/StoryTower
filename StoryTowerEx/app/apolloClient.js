@@ -3,7 +3,7 @@ import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client';
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    uri:` http://192.168.1.205:3001/graphql`, // Replace with the correct API endpoint for your Apollo Server
+    uri:` https://192.168.1.205:3001/graphql`, // Replace with the correct API endpoint for your Apollo Server
   }),
 });
 
