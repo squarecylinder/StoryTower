@@ -18,6 +18,7 @@ const server = new ApolloServer({
   resolvers,
   playground: process.env.NODE_ENV === 'development',
   context: authMiddleware,
+  cache: 'bounded',
 })
 
 // Middleware to handle parsing JSON data in request body
