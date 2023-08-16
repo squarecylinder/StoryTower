@@ -14,7 +14,7 @@ import client, { GET_STORIES } from './apolloClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PAGE_SIZE = 24;
-const minCols = 1;
+const minCols = 2;
 
 const calcNumColumns = (width) => {
   const cols = width / 200;
@@ -55,20 +55,19 @@ const Index = () => {
   const [formattedData, setFormattedData] = useState([]);
   const [storiesByPage, setStoriesByPage] = useState({});
   const { width } = useWindowDimensions();
-  const hideImages = width < 500;
   
 
   const fetchData = async (page = 1) => {
     try {
       setLoading(true);
-      const offset = (page - 1) * 24;
+      const offset = (page - 1) * PAGE_SIZE;
       const { data } = await client.query({
         query: GET_STORIES,
-        variables: { offset, limit: 24 },
+        variables: { offset, limit: PAGE_SIZE },
       });
   
       setFormattedData(formatData(data.getStories.data, numColumns));
-      setTotalPages(Math.ceil(data.getStories.totalStories / 24));
+      setTotalPages(Math.ceil(data.getStories.totalStories / PAGE_SIZE));
       setCurrentPage(page);
       await AsyncStorage.setItem('currentPage', page.toString());
     } catch (error) {
@@ -114,9 +113,9 @@ const Index = () => {
 
   const renderStoryItem = ({ item }) => (
     <View key={item._id} style={styles.item}>
-      {!hideImages && (
-        <Image source={{ uri: item.coverArt }} style={styles.coverArt} resizeMode="contain" />
-      )}
+        <Image source={{ uri: item.coverArt }} style={styles.coverArt} resizeMode="contain" 
+          onError={() => console.log("Image failed to load: ", item.coverArt)}
+        />
       <Text style={styles.itemText}>{item.title}</Text>
     </View>
   );
@@ -234,9 +233,6 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     marginBottom: 0,
-    '@media (max-width: 500px)': {
-      display: 'none', // Hide the cover art when screen size is below 500 pixels
-    },
   },
   itemTransparent: {
     backgroundColor: 'transparent',

@@ -6,7 +6,7 @@ async function performAsuraCatalogScraping() {
   console.log('Checking Asura.gg catalog...');
   const browser = await puppeteer.launch({ executablePath: executablePath});
   const page = await browser.newPage();
-  await page.goto('https://asura.gg/manga/list-mode');
+  await page.goto('https://asura.nacm.xyz/manga/list-mode');
 
   // Perform web scraping tasks here...
   const scrapedData = await page.evaluate(() => {

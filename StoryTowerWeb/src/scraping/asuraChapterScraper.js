@@ -31,7 +31,7 @@ async function performAsuraChapterScraping() {
     try {
       for (const story of storyCatalogArray) {
         const existingStory = await Story.findOne({ title: story.name });
-        if (story.link != "https://asura.gg/manga/0223090894-everyone-regressed-except-me/" && story.link != "https://asura.gg/discord") {
+        if (story.link != "https://asura.nacm.xyz/manga/0223090894-everyone-regressed-except-me/" && story.link != "https://asura.nacm.xyz/discord") {
           await page.goto(story.link);
           // Wait for the element to appear on the page (use the appropriate selector)
           await page.waitForSelector('.epcurfirst');
