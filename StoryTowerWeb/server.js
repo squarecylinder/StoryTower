@@ -32,10 +32,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../StoryTower/'))
 })
 
-const privateKey = fs.readFileSync('./server.key', 'utf8');
-const certificate = fs.readFileSync('./server.crt', 'utf8');
+// const privateKey = fs.readFileSync('./server.key', 'utf8');
+// const certificate = fs.readFileSync('./server.crt', 'utf8');
 
-const credentials = { key: privateKey, cert: certificate };
+// const credentials = { key: privateKey, cert: certificate };
 // Start the server
 const startApolloServer = async () => {
   try {
@@ -47,9 +47,9 @@ const startApolloServer = async () => {
     connection.on('open', () => {
       console.log('Connected to MongoDB.');
       // Start Apollo Server after the MongoDB connection is open
-      const httpsServer = https.createServer(credentials, app);
-      httpsServer.listen(PORT, process.env.SERVER_IP,() => {
-        console.log(`API Server running at https://${process.env.SERVER_IP}:${PORT}${server.graphqlPath}`);
+      // const httpsServer = https.createServer(credentials, app);
+      app.listen(PORT, () => {
+        console.log(`API Server running at http://${process.env.SERVER_IP}:${PORT}${server.graphqlPath}`);
       });
     });
   } catch (error) {
