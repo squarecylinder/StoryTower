@@ -30,8 +30,9 @@ async function performAsuraChapterScraping() {
 
     try {
       for (const story of storyCatalogArray) {
+        console.log(story.link);
         const existingStory = await Story.findOne({ title: story.name });
-        if (story.link != "https://asura.nacm.xyz/manga/0223090894-everyone-regressed-except-me/" && story.link != "https://asura.nacm.xyz/discord") {
+        if (story.name != "(AD) Everyone Regressed Except Me" && story.name != "Discord" && !story.link.includes('.gg')) {
           await page.goto(story.link);
           // Wait for the element to appear on the page (use the appropriate selector)
           await page.waitForSelector('.epcurfirst');
@@ -70,6 +71,12 @@ async function performAsuraChapterScraping() {
                 await existingStory.save();
                 console.log('Synopsis updated in the database.');
               } 
+
+              if(existingStory.coverArt !== coverArtSrc){
+                existingStory.coverArt = coverArtSrc
+                await existingStory.save()
+                console.log('Cover art updated in the database')
+              }
 
               if (existingStory.chapters.length === 0) {
                 await scrapeChapterData(page, existingStory, firstChapterURL);
