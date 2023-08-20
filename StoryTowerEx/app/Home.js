@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Header from './components/Header';
 import client, { GET_STORIES } from './apolloClient';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PAGE_SIZE = 24;
@@ -46,16 +47,16 @@ const formatData = (data, numColumns) => {
   return formattedData;
 };
 
-const Index = () => {
+const Home = () => {
   const [loading, setLoading] = useState(true);
   const [numColumns, setNumColumns] = useState(calcNumColumns(width));
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [initialRender, setInitialRender] = useState(true);
   const [formattedData, setFormattedData] = useState([]);
-  const [storiesByPage, setStoriesByPage] = useState({});
   const { width } = useWindowDimensions();
-  
+  const navigation = useNavigation();
+  const flatListRef = useRef(null)
 
   const fetchData = async (page = 1) => {
     try {
@@ -109,7 +110,13 @@ const Index = () => {
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
+    flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
   };
+
+  // const handlePageClick = (page) => {
+  //   setCurrentPage(page);
+  //   navigation.push('Home', { page }); // Navigate with page parameter
+  // };
 
   const renderStoryItem = ({ item }) => (
     <View key={item._id} style={styles.item}>
@@ -120,16 +127,19 @@ const Index = () => {
     </View>
   );
 
-  const renderPaginationButton = (page) => (
+  const renderPaginationButton = (page) => {
+    const isActive = page === currentPage
+    return (
     <Pressable
       key={page}
-      style={styles.paginationButton}
+      style={[styles.paginationButton, isActive && styles.activePaginationButton]}
       onPress={() => handlePageClick(page)}
       android_ripple={{ color: 'lightgray', borderless: true }}
     >
-      <Text style={styles.paginationButtonText}>{page}</Text>
+      <Text style={[styles.paginationButtonText, isActive && styles.activePaginationButtonText]}>{page}</Text>
     </Pressable>
   );
+  }
 
   const renderPagination = () => {
     const pages = [];
@@ -140,6 +150,7 @@ const Index = () => {
   };
 
   const flatListProps = {
+    ref: flatListRef,
     key: numColumns,
     data: formattedData,
     numColumns,
@@ -151,13 +162,21 @@ const Index = () => {
     onRefresh: handleRefresh,
     ListFooterComponent: (
       <View style={styles.paginationContainer}>
+      <Pressable
+          style={styles.paginationButton}
+          onPress={() => handlePageClick(1)}
+          android_ripple={{ color: 'lightgray', borderless: true }}
+          disabled={currentPage === 1}
+        >
+          <Text style={styles.paginationButtonText}>{"<<"}</Text>
+        </Pressable>
         <Pressable
           style={styles.paginationButton}
           onPress={() => handlePageClick(currentPage - 1)}
           android_ripple={{ color: 'lightgray', borderless: true }}
           disabled={currentPage === 1}
         >
-          <Text style={styles.paginationButtonText}>{"<<"}</Text>
+          <Text style={styles.paginationButtonText}>{"<"}</Text>
         </Pressable>
         {renderPagination()}
         <Pressable
@@ -166,7 +185,7 @@ const Index = () => {
           android_ripple={{ color: 'lightgray', borderless: true }}
           disabled={currentPage === totalPages}
         >
-          <Text style={styles.paginationButtonText}>{">>"}</Text>
+          <Text style={styles.paginationButtonText}>{">"}</Text>
         </Pressable>
       </View>
     ),
@@ -176,11 +195,6 @@ const Index = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header />
-      <View style={styles.refreshButtonContainer}>
-        <Pressable style={styles.refreshButton} onPress={handleRefresh}>
-          <Text style={styles.buttonText}>Refresh</Text>
-        </Pressable>
-      </View>
       <View style={styles.contentContainer}>
       <FlatList {...flatListProps} />
       </View>
@@ -191,21 +205,6 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  refreshButtonContainer: {
-    alignItems: 'center',
-    marginTop: '2.5%',
-  },
-  refreshButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   contentContainer: {
     flex: 1,
@@ -230,8 +229,8 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   coverArt: {
-    width: 250,
-    height: 250,
+    width: 225,
+    height: 225,
     marginBottom: 0,
   },
   itemTransparent: {
@@ -242,6 +241,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 16,
   },
+  activePaginationButton: {
+    backgroundColor: 'gray', // Change the color for the active page button
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4, // For Android shadow
+  },
+  activePaginationButtonText: {
+    color: 'white', // Change the text color for the active page button
+    fontWeight: 'bold',
+  },
   paginationButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -251,4 +262,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Index;
+export default Home;

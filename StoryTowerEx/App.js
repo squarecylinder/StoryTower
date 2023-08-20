@@ -2,11 +2,14 @@
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import client from './app/apolloClient';
-import Index from './app/index';
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from './app/AppNavigator';
 
 const App = () => (
   <ApolloProvider client={client}>
-    <Index />
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
   </ApolloProvider>
 );
 
