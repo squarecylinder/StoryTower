@@ -143,9 +143,46 @@ const Home = () => {
 
   const renderPagination = () => {
     const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(renderPaginationButton(i));
+  
+    const renderEllipsis = (key) => (
+      <Text key={key} style={[styles.paginationButtonText, styles.ellipsis]}>
+        ...
+      </Text>
+    );
+  
+    // Add the first and second pages
+    if (totalPages > 0) {
+      pages.push(renderPaginationButton(1));
     }
+    if (totalPages > 1) {
+      pages.push(renderPaginationButton(2));
+    }
+  
+    // Add ellipsis or pages in the middle
+    if (totalPages > 3) {
+      if (currentPage > 4) {
+        pages.push(renderEllipsis('ellipsis-start'));
+      }
+      for (let i = Math.max(currentPage - 1, 3); i <= Math.min(currentPage + 1, totalPages - 2); i++) {
+        pages.push(renderPaginationButton(i));
+      }
+      if (currentPage < totalPages - 3) {
+        pages.push(renderEllipsis('ellipsis-end'));
+      }
+    } else {
+      for (let i = 3; i <= totalPages - 2; i++) {
+        pages.push(renderPaginationButton(i));
+      }
+    }
+  
+    // Add the second-to-last and last pages
+    if (totalPages > 2) {
+      pages.push(renderPaginationButton(totalPages - 1));
+    }
+    if (totalPages > 1) {
+      pages.push(renderPaginationButton(totalPages));
+    }
+  
     return pages;
   };
 
@@ -186,6 +223,14 @@ const Home = () => {
           disabled={currentPage === totalPages}
         >
           <Text style={styles.paginationButtonText}>{">"}</Text>
+        </Pressable>
+        <Pressable
+          style={styles.paginationButton}
+          onPress={() => handlePageClick(totalPages)}
+          android_ripple={{ color: 'lightgray', borderless: true }}
+          disabled={currentPage === totalPages}
+        >
+          <Text style={styles.paginationButtonText}>{">>"}</Text>
         </Pressable>
       </View>
     ),
@@ -260,6 +305,9 @@ const styles = StyleSheet.create({
   paginationButtonText: {
     fontSize: 16,
   },
+  ellipsis:{
+    alignSelf: 'flex-end'
+  }
 });
 
 export default Home;
