@@ -2,8 +2,6 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const path = require('path');
 const authMiddleware = require('./utils/auth');
-const https = require('https');
-const fs = require('fs');
 
 require('./src/cronJobs');
 
@@ -33,10 +31,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../StoryTower/'))
 })
 
-// const privateKey = fs.readFileSync('./server.key', 'utf8');
-// const certificate = fs.readFileSync('./server.crt', 'utf8');
-
-// const credentials = { key: privateKey, cert: certificate };
 // Start the server
 const startApolloServer = async () => {
   try {
@@ -48,7 +42,6 @@ const startApolloServer = async () => {
     connection.on('open', () => {
       console.log('Connected to MongoDB.');
       // Start Apollo Server after the MongoDB connection is open
-      // const httpsServer = https.createServer(credentials, app);
       app.listen(PORT, () => {
         console.log(`API Server running at http://${process.env.SERVER_IP}:${PORT}${server.graphqlPath}`);
       });
