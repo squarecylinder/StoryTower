@@ -1,6 +1,6 @@
 // StoryDetailsScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { GET_CHAPTER_TITLES } from '../apolloClient'; // Update this import with the actual location of your queries
 
@@ -8,7 +8,7 @@ const StoryDetailsScreen = ({ route }) => {
   const { _id, title, coverArt, rating, chapters, synopsis, genres, chapterCount } = route.params.story;
   const chapterIds = []
   chapters.forEach(element => {
-  chapterIds.push(element._id)
+    chapterIds.push(element._id)
   });
   const { loading, error, data } = useQuery(GET_CHAPTER_TITLES, {
     variables: { _id, chapterIds },
@@ -41,9 +41,11 @@ const StoryDetailsScreen = ({ route }) => {
       {Array.isArray(data.chapters) ? (
         <ScrollView style={styles.chapterList}>
           {data.chapters.map((chapter, index) => (
-            <View key={index} style={styles.chapterItem}>
-              <Text>{chapter.title}</Text>
-            </View>
+            <Pressable>
+              <View key={index} style={styles.chapterItem}>
+                <Text>{chapter.title}</Text>
+              </View>
+            </Pressable>
           ))}
         </ScrollView>
       ) : (
