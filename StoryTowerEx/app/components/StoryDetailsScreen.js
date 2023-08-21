@@ -1,10 +1,28 @@
 // StoryDetailsScreen.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import { useQuery } from '@apollo/client';
+import { GET_CHAPTER_TITLES } from '../apolloClient'; // Update this import with the actual location of your queries
 
 const StoryDetailsScreen = ({ route }) => {
-  const { title, coverArt, rating, chapters, synopsis, genres, chapterCount } = route.params.story;
-    console.log(route.params.story)
+  const { _id, title, coverArt, rating, chapterIds, synopsis, genres, chapterCount } = route.params.story;
+
+  const { loading, error, data } = useQuery(GET_CHAPTER_TITLES, {
+    variables: { _id, chapterIds },
+  });
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    console.error('Error fetching story details:', error);
+    return <Text>Error fetching story details</Text>;
+  }
+
+  const story = data.story;
+  const chapters = story.chapters;
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -13,6 +31,7 @@ const StoryDetailsScreen = ({ route }) => {
         <Text>{synopsis}</Text>
         <Text>Genres: {genres}</Text>
         <Text style={styles.rating}>Rating: {rating}</Text>
+        <Text>Chapter Count: {chapterCount}</Text>
         {/* Add Bookmark button here */}
         {/* Add First and Last chapter buttons here */}
       </View>

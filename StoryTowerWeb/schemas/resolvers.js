@@ -31,6 +31,17 @@ const resolvers = {
         throw new Error('Internal Server Error');
       }
     },
+    chapters: async (_, { ids }) => {
+      try {
+        // Fetch chapters based on the provided IDs
+        const chapters = await Chapter.find({ _id: { $in: ids } });
+
+        return chapters;
+      } catch (error) {
+        console.error('Error fetching chapters:', error);
+        throw new Error('Internal Server Error');
+      }
+    },
   },
   Mutation: {
     addScrapedDataToCatalog,

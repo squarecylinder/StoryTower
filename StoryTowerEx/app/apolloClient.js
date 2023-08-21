@@ -40,4 +40,13 @@ query getStories($offset: Int, $limit: Int) {
 }
 `;
 
+export const GET_CHAPTER_TITLES = gql`
+query getChapterTitles($chapterIds: [ID!]!) {
+  chapters(ids: $chapterIds) {
+    _id
+    title
+  }
+}
+`;
+
 export default client;

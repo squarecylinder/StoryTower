@@ -102,7 +102,7 @@ const typeDefs = gql`
     user(id: ID!): User
     getStories(offset: Int, limit: Int): StoryPagination!
     story(id: ID!): Story
-    chapters: [Chapter]
+    chapters(ids: [ID!]!): [Chapter]
     chapter(id: ID!): Chapter
     comments: [Comment]
     comment(id: ID!): Comment
