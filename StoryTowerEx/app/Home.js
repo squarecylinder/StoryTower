@@ -113,18 +113,21 @@ const Home = () => {
     flatListRef.current.scrollToOffset({ animated: false, offset: 0 });
   };
 
-  // const handlePageClick = (page) => {
-  //   setCurrentPage(page);
-  //   navigation.push('Home', { page }); // Navigate with page parameter
-  // };
-
   const renderStoryItem = ({ item }) => (
+    <Pressable
+      onPress={() => navigation.navigate('StoryDetails', { story: item })} // Navigate to details screen with story data
+      // style={({ pressed }) => [
+      //   styles.item,
+      //   pressed && styles.itemPressed, // Apply style when pressed
+      // ]}
+    >
     <View key={item._id} style={styles.item}>
         <Image source={{ uri: item.coverArt }} style={styles.coverArt} resizeMode="contain" 
           onError={() => console.log("Image failed to load: ", item.coverArt)}
         />
       <Text style={styles.itemText}>{item.title}</Text>
     </View>
+    </Pressable>
   );
 
   const renderPaginationButton = (page) => {

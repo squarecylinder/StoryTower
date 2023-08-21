@@ -24,8 +24,13 @@ query getStories($offset: Int, $limit: Int) {
   getStories(offset: $offset, limit: $limit) {
     data {
       _id
-      coverArt
       title
+      rating
+      lastUpdated
+      chapterCount
+      synopsis
+      genres
+      coverArt
     }
   totalStories
 }

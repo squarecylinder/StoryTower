@@ -31,7 +31,7 @@ const typeDefs = gql`
     chapterCount: Int
     synopsis: String
     genres: [String]
-    chapters: [Chapter]
+    chapters: [Chapter]!
     coverArt: String
   }
 

@@ -3,13 +3,15 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 
 const StoryDetailsScreen = ({ route }) => {
-  const { title, coverArt, rating, chapters } = route.params;
-    console.log(route.params)
+  const { title, coverArt, rating, chapters, synopsis, genres, chapterCount } = route.params.story;
+    console.log(route.params.story)
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Image source={{ uri: coverArt }} style={styles.coverArt} resizeMode="contain" />
         <Text style={styles.title}>{title}</Text>
+        <Text>{synopsis}</Text>
+        <Text>Genres: {genres}</Text>
         <Text style={styles.rating}>Rating: {rating}</Text>
         {/* Add Bookmark button here */}
         {/* Add First and Last chapter buttons here */}
