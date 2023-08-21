@@ -5,8 +5,11 @@ import { useQuery } from '@apollo/client';
 import { GET_CHAPTER_TITLES } from '../apolloClient'; // Update this import with the actual location of your queries
 
 const StoryDetailsScreen = ({ route }) => {
-  const { _id, title, coverArt, rating, chapterIds, synopsis, genres, chapterCount } = route.params.story;
-
+  const { _id, title, coverArt, rating, chapters, synopsis, genres, chapterCount } = route.params.story;
+  const chapterIds = []
+  chapters.forEach(element => {
+  chapterIds.push(element._id)
+  });
   const { loading, error, data } = useQuery(GET_CHAPTER_TITLES, {
     variables: { _id, chapterIds },
   });
@@ -20,9 +23,9 @@ const StoryDetailsScreen = ({ route }) => {
     return <Text>Error fetching story details</Text>;
   }
 
-  const story = data.story;
-  const chapters = story.chapters;
-
+  // const story = data.story;
+  // const chapters2 = story.chapters;
+  console.log(data.chapters)
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -35,9 +38,9 @@ const StoryDetailsScreen = ({ route }) => {
         {/* Add Bookmark button here */}
         {/* Add First and Last chapter buttons here */}
       </View>
-      {Array.isArray(chapters) ? (
+      {Array.isArray(data.chapters) ? (
         <ScrollView style={styles.chapterList}>
-          {chapters.map((chapter, index) => (
+          {data.chapters.map((chapter, index) => (
             <View key={index} style={styles.chapterItem}>
               <Text>{chapter.title}</Text>
             </View>
