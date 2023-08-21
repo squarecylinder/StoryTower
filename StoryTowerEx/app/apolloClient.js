@@ -31,6 +31,9 @@ query getStories($offset: Int, $limit: Int) {
       synopsis
       genres
       coverArt
+      chapters {
+        _id
+      }
     }
   totalStories
 }
