@@ -16,7 +16,6 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  playground: process.env.NODE_ENV === 'development',
   context: authMiddleware,
   cache: 'bounded',
 })
