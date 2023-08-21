@@ -116,10 +116,6 @@ const Home = () => {
   const renderStoryItem = ({ item }) => (
     <Pressable
       onPress={() => navigation.navigate('StoryDetails', { story: item })} // Navigate to details screen with story data
-      // style={({ pressed }) => [
-      //   styles.item,
-      //   pressed && styles.itemPressed, // Apply style when pressed
-      // ]}
     >
     <View key={item._id} style={styles.item}>
         <Image source={{ uri: item.coverArt }} style={styles.coverArt} resizeMode="contain" 
