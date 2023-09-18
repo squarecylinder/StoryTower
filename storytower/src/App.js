@@ -1,5 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
+import {useQuery} from '@apollo/client';
+import client, { GET_STORIES }  from './apolloClient';
+
+client.query(GET_STORIES).then((results) => console.log(results));
+
+function DisplayStories() {
+  const { loading, error, data } = useQuery(GET_STORIES);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  console.log(data);
+}
 
 function App() {
   return (
@@ -18,6 +29,7 @@ function App() {
           Learn React
         </a>
       </header>
+      {/* <DisplayStories /> */}
     </div>
   );
 }
