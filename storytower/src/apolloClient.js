@@ -17,7 +17,9 @@ export const GET_STORY = gql`
       chapterCount
       synopsis
       genres
-      chapters
+      chapters {
+        _id
+      }
       coverArt
     }
   }
