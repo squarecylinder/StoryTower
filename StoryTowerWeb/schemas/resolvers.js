@@ -49,7 +49,7 @@ const resolvers = {
         const story = await Story.findById(storyId);
         return story;
       } catch (error) {
-        console.error('Error fetching story:', error);
+        console.error('Error fetching story:', error, storyId);
         throw new Error('Internal Server Error');
       }
     },
