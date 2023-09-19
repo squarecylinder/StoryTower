@@ -1,16 +1,28 @@
 import React, { useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import client, { GET_CHAPTER_TITLES } from '../apolloClient';
+import client, { GET_CHAPTER_TITLES, GET_STORY } from '../apolloClient';
 
 const StoryDetails = () => {
   const { storyId } = useParams();
   const location = useLocation();
-  const storyChapters = location.state.chapters;
+  const story = location.state?.story
+  const storyChapters = story?.chapters || [];
   const storyChapterIds = storyChapters.map(chapter => chapter._id)
-  console.log(storyChapterIds);
+  console.log(storyId)
 
   useEffect(() => {
     const fetchStoryDetails = async () => {
+    if(!story){
+        try {
+            const { data } = await client.query({
+                query: GET_STORY,
+                variables: { _id: storyId}
+            })
+            console.log('Story details from URL Params: ', data)
+        } catch (error) {
+            console.error('Error fetching story details:', error.message);
+        }
+    }
       try {
         const { data } = await client.query({
           query: GET_CHAPTER_TITLES,

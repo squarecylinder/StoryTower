@@ -56,7 +56,7 @@ const App = () => {
     return (
       <div className="grid-container" ref={containerRef}>
         {data.map((item) => (
-          <Link to={`story/${item._id}`} state={{ chapters: item.chapters }} >
+          <Link to={`story/${item._id}`} state={{ story: item }} >
             <div key={item._id} className="item">
               {renderItem({ item })}
             </div>
