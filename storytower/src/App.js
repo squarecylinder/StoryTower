@@ -1,35 +1,82 @@
-import logo from './logo.svg';
-import './App.css';
-import {useQuery} from '@apollo/client';
-import { GET_STORIES }  from './apolloClient';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import './App.css'
+import client, { GET_STORIES } from './apolloClient';
 
-function DisplayStories() {
-  const { loading, error, data } = useQuery(GET_STORIES);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-  console.log(data);
-}
+const App = () => {
+  const [loading, setLoading] = useState(true);
+  const [formattedData, setFormattedData] = useState([]);
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <DisplayStories />
+  const fetchData = async (page = 1) => {
+    try {
+      setLoading(true);
+      const offset = (page - 1) * 24;
+      const { data } = await client.query({
+        query: GET_STORIES,
+        variables: { offset, limit: 24 },
+      });
+      setFormattedData(data.getStories.data)
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderStoryItem = ({ item }) => (
+    <div key={item._id}>
+      <img
+        src={item.coverArt}
+        alt="Cover Art"
+        className="coverArt"
+      />
+      <p className="itemText">{item.title}</p>
     </div>
   );
-}
+
+  const StoryList = ({ data, renderItem }) => {
+    const containerRef = useRef(null);
+    console.log(data)
+    // This is to resize the items on the page so they fit nicely depending on screensize.
+    useEffect(() => {
+      const updateGridColumns = () => {
+        const containerWidth = containerRef.current.offsetWidth;
+        const numColumns = Math.floor(containerWidth / 220); // Adjust 220 based on your design
+        containerRef.current.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
+      };
+
+      window.addEventListener('resize', updateGridColumns);
+      updateGridColumns();
+
+      return () => {
+        window.removeEventListener('resize', updateGridColumns);
+      };
+    }, []);
+
+    return (
+      <div className="grid-container" ref={containerRef}>
+        {data.map((item) => (
+          <Link to={`story/${item._id}`} state={{ chapters: item.chapters }} >
+            <div key={item._id} className="item">
+              {renderItem({ item })}
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    fetchData(1)
+  }, [])
+
+  return (
+    <div className="container">
+      <div className="contentContainer">
+        <StoryList data={formattedData} renderItem={renderStoryItem} />
+      </div>
+    </div>
+  );
+};
 
 export default App;

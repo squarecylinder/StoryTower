@@ -7,6 +7,35 @@ const client = new ApolloClient({
   }),
 });
 
+export const STORY = gql`
+query {
+  story(id: $id) {
+    _id
+    title
+    rating
+    lastUpdated
+    chapterCount
+    synopsis
+    genres
+    chapters {
+      _id
+      title
+      images
+      comments {
+        _id
+        author {
+          _id
+          username
+          email
+          profilePicture
+        }
+        timestamp
+        content
+      }
+    }
+    coverArt
+  }
+}`
 
 export const GET_STORY_CATALOG = gql`
   query getStoryCatalog {
