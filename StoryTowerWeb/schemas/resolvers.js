@@ -44,7 +44,7 @@ const resolvers = {
     },
     story: async (_, { storyId }) => {
       try {
-        console.log(storyId)
+        console.log('Story Resolver params', _, storyId)
         // Fetch story based on the provided ID
         const story = await Story.findById(storyId);
         return story;
