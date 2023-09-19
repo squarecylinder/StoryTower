@@ -42,10 +42,10 @@ const resolvers = {
         throw new Error('Internal Server Error');
       }
     },
-    story: async (_, { id }) => {
+    story: async (_, { storyId }) => {
       try {
-        // Fetch chapters based on the provided IDs
-        const story = await Chapter.findById({ _id: id });
+        // Fetch story based on the provided ID
+        const story = await Chapter.findById(storyId);
         return story;
       } catch (error) {
         console.error('Error fetching story:', error);

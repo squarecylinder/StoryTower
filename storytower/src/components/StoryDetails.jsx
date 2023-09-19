@@ -16,7 +16,7 @@ const StoryDetails = () => {
         try {
             const { data } = await client.query({
                 query: GET_STORY,
-                variables: { _id: storyId}
+                variables: { storyId: storyId}
             })
             console.log('Story details from URL Params: ', data)
         } catch (error) {
@@ -26,7 +26,7 @@ const StoryDetails = () => {
       try {
         const { data } = await client.query({
           query: GET_CHAPTER_TITLES,
-          variables: { _id: storyId, chapterIds: storyChapterIds }, // Replace with actual chapterIds
+          variables: { chapterIds: storyChapterIds }, // Replace with actual chapterIds
         });
         console.log('Story details:', data); // Adjust this based on the structure of your data
       } catch (error) {
