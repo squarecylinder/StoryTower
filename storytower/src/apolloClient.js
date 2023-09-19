@@ -57,13 +57,21 @@ query getStories($offset: Int, $limit: Int) {
 }
 `;
 
-export const GET_CHAPTER_TITLES = gql`
-query getChapterTitles($chapterIds: [ID!]!) {
+export const GET_CHAPTER_DETAILS = gql`
+query getChapterDetails($chapterIds: [ID!]!) {
   chapters(ids: $chapterIds) {
     _id
     title
+    images
+    comments {
+      _id
+    }
+    story {
+      _id
+    }
   }
 }
 `;
+
 
 export default client;

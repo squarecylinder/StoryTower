@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams, Link } from 'react-router-dom';
-import client, { GET_CHAPTER_TITLES, GET_STORY } from '../apolloClient';
+import client, { GET_CHAPTER_DETAILS, GET_STORY } from '../apolloClient';
 
 const StoryDetails = () => {
     const { storyId } = useParams();
@@ -24,7 +24,7 @@ const StoryDetails = () => {
                 try {
                     const chapterIds = story?.chapters.map(chapter => chapter._id) || [];
                     const { data } = await client.query({
-                        query: GET_CHAPTER_TITLES,
+                        query: GET_CHAPTER_DETAILS,
                         variables: { chapterIds },
                     });
                     setChapters(data.chapters);
