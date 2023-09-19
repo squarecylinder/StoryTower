@@ -16,7 +16,7 @@ const StoryDetails = () => {
         try {
             const { data } = await client.query({
                 query: GET_STORY,
-                variables: { storyId: storyId}
+                variables: { storyId }
             })
             console.log('Story details from URL Params: ', data)
         } catch (error) {

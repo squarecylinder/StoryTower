@@ -45,7 +45,7 @@ const resolvers = {
     story: async (_, { storyId }) => {
       try {
         // Fetch story based on the provided ID
-        const story = await Chapter.findById(storyId);
+        const story = await Story.findById(storyId);
         return story;
       } catch (error) {
         console.error('Error fetching story:', error);
