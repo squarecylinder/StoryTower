@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css'
 import client, { GET_STORIES } from './apolloClient';
+import LoadingScreen from './components/LoadingScreen'; 
 
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [formattedData, setFormattedData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchData = async (page = 1) => {
+  const fetchData = async (page) => {
     try {
       setLoading(true);
       const offset = (page - 1) * 24;
@@ -35,31 +37,11 @@ const App = () => {
   );
 
   const StoryList = ({ data, renderItem }) => {
-    const containerRef = useRef(null);
-    console.log(data)
-    // This is to resize the items on the page so they fit nicely depending on screensize.
-    useEffect(() => {
-      const updateGridColumns = () => {
-        const containerWidth = containerRef.current.offsetWidth;
-        const numColumns = Math.floor(containerWidth / 220); // Adjust 220 based on your design
-        containerRef.current.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
-      };
-
-      window.addEventListener('resize', updateGridColumns);
-      updateGridColumns();
-
-      return () => {
-        window.removeEventListener('resize', updateGridColumns);
-      };
-    }, []);
-
     return (
-      <div className="grid-container" ref={containerRef}>
+      <div className="grid-container">
         {data.map((item) => (
-          <Link to={`story/${item._id}`} state={{ story: item }} >
-            <div key={item._id} className="item">
-              {renderItem({ item })}
-            </div>
+          <Link to={`story/${item._id}`} state={{ story: item }} key={item._id}>
+            <div className="item">{renderItem({ item })}</div>
           </Link>
         ))}
       </div>
@@ -67,13 +49,39 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchData(1)
-  }, [])
+    fetchData(currentPage)
+  }, [currentPage])
+
+  const handleNextPage = () => {
+    setCurrentPage(prevPage => prevPage + 1);
+    fetchData(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prevPage => prevPage - 1);
+      fetchData(currentPage - 1);
+    }
+  };
 
   return (
     <div className="container">
       <div className="contentContainer">
-        <StoryList data={formattedData} renderItem={renderStoryItem} />
+        {loading ? (
+          <LoadingScreen />
+        ) : (
+          <>
+            <StoryList data={formattedData} renderItem={renderStoryItem} />
+            <div className="pagination">
+              <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                Previous
+              </button>
+              <button onClick={handleNextPage} disabled={loading}>
+                Next
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

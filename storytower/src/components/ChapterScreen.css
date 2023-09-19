@@ -1,0 +1,12 @@
+/* Add this CSS to your stylesheet */
+.chapter-images-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chapter-images-container img {
+    width: 100%; /* Ensure images take the full width of the column */
+    margin: 10px auto; /* Add some space between images */
+    max-width: 800px;
+  }
+  

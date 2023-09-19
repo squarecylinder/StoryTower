@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams, Link } from 'react-router-dom';
 import client, { GET_CHAPTER_DETAILS, GET_STORY } from '../apolloClient';
+import "./StoryDetails.css"
 
 const StoryDetails = () => {
     const { storyId } = useParams();
@@ -50,7 +51,7 @@ const StoryDetails = () => {
                     <img
                         src={story.coverArt}
                         alt="Cover Art"
-                        className="coverArt"
+                        className="cover-art"
                     />
                     <p>Title: {story.title}</p>
                     <p>Rating: {story.rating}</p>
@@ -66,7 +67,7 @@ const StoryDetails = () => {
                             <ul>
                                 {chapters.map((chapter, index) => (
                                     <li key={index}>
-                                        <Link to={`/chapter/${chapter._id}`}>{chapter.title}</Link>
+                                        <Link to={`/chapter/${chapter._id}`} state={chapter}>{chapter.title}</Link>
                                     </li>
                                 ))}
                             </ul>

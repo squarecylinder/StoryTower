@@ -5,6 +5,7 @@ import { ApolloProvider } from '@apollo/client';
 import './index.css';
 import App from './App';
 import StoryDetails from './components/StoryDetails';
+import ChapterScreen from './components/ChapterScreen';
 import reportWebVitals from './reportWebVitals';
 import client from './apolloClient';
 
@@ -16,6 +17,7 @@ root.render(
         <Routes>
           <Route exact path="/" element={<App />} />
           <Route path="/story/:storyId" element={<StoryDetails />} />
+          <Route path="/chapter/:chapterId" element={<ChapterScreen />} />
         </Routes>
       </Router>
     </ApolloProvider>
