@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import BrowserRouter
 import { ApolloProvider } from '@apollo/client';
 import './index.css';
-import App from './App';
+import Home from './components/Home';
+import ComicPage from './ComicPage';
 import StoryDetails from './components/StoryDetails';
 import ChapterScreen from './components/ChapterScreen';
 import reportWebVitals from './reportWebVitals';
@@ -15,7 +16,11 @@ root.render(
     <ApolloProvider client={client}>
       <Router>
         <Routes>
-          <Route exact path="/" element={<App />} />
+          <Route exact path="/" element={<Home />} />
+          <Route
+            path="/comics/page/:page"
+            element={<ComicPage />}
+          />
           <Route path="/story/:storyId" element={<StoryDetails />} />
           <Route path="/chapter/:chapterId" element={<ChapterScreen />} />
         </Routes>
