@@ -14,9 +14,9 @@ const StoryDetails = () => {
     const fetchStoryDetails = async () => {
     if(!story){
         try {
-            const { data } = await client.query({
+            const data  = await client.query({
                 query: GET_STORY,
-                variables: { storyId }
+                variables: { id: "64c97091177330ecd609bc07" }
             })
             console.log('Story details from URL Params: ', data)
         } catch (error) {

@@ -42,14 +42,14 @@ const resolvers = {
         throw new Error('Internal Server Error');
       }
     },
-    story: async (_, { storyId }) => {
+    story: async (_, { id }) => {
       try {
-        console.log('Story Resolver params', _, storyId)
+        console.log('Story Resolver params', _, id)
         // Fetch story based on the provided ID
-        const story = await Story.findById(storyId);
+        const story = await Story.findById(id);
         return story;
       } catch (error) {
-        console.error('Error fetching story:', error, storyId);
+        console.error('Error fetching story:', error, id);
         throw new Error('Internal Server Error');
       }
     },

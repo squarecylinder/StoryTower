@@ -8,8 +8,8 @@ const client = new ApolloClient({
 });
 
 export const GET_STORY = gql`
-  query getStory($storyId: ID!){
-    story(id: $storyId){
+  query getStory($id: ID!){
+    story(id: $id){
       _id
       title
       rating
