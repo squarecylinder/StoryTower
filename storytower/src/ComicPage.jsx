@@ -71,7 +71,6 @@ const ComicPage = () => {
   }, [page, loadPage, location]);
 
   return (
-    <div className="container">
       <div className="contentContainer">
         {loading ? (
           <LoadingScreen />
@@ -104,7 +103,6 @@ const ComicPage = () => {
             </div>
           </>
         )}
-      </div>
     </div>
   );
 };
