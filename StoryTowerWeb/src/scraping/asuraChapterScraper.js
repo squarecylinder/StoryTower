@@ -2,6 +2,8 @@
 const puppeteer = require('puppeteer-core');
 const {executablePath} = require('./executablePath')
 const { Story, StoryCatalog, Chapter } = require('../../models');
+const oldDomain = 'https://asura.nacm.xyz'
+const newDomain = 'https://asuracomics.com'
 
 async function performAsuraChapterScraping() {
   // Fetch only the links from the StoryCatalog collection
@@ -30,10 +32,13 @@ async function performAsuraChapterScraping() {
 
     try {
       for (const story of storyCatalogArray) {
-        console.log(story.link);
+        const newLink = story.link.replace(oldDomain, newDomain);
+        // console.log(`Changing ${story.link} to ${newLink}`);
         const existingStory = await Story.findOne({ title: story.name });
-        if (story.name != "(AD) Everyone Regressed Except Me" && story.name != "Discord" && !story.link.includes('.gg')) {
-          await page.goto(story.link);
+        if (story.name != "(AD) Everyone Regressed Except Me" && story.name != "Discord"
+         && !story.link.includes('.gg') && !story.link.includes('.nacm.xyz') && !story.name.includes('discord')
+         ) {
+          await page.goto(newLink);
           // Wait for the element to appear on the page (use the appropriate selector)
           await page.waitForSelector('.epcurfirst');
 
@@ -138,7 +143,12 @@ async function performAsuraChapterScraping() {
   async function scrapeChapterData(page, existingStory, chapterURL) {
     try {
       while (chapterURL) {
+        if (chapterURL.includes('discord'))
+        {
+          return
+        }
         try {
+          console.log(`In the scrape chapter data fnc ${chapterURL}`)
           // Navigate to the chapter page using the provided URL
           await page.goto(chapterURL, { timeout: 60000 });
 
