@@ -19,7 +19,7 @@ root.render(
           <Route exact path="/" element={<Home />} />
           <Route
             path="/comics/page/:page"
-            element={<ComicPage page={1}/>}
+            element={<ComicPage />}
           />
           <Route path="/story/:storyId" element={<StoryDetails />} />
           <Route path="/chapter/:chapterId" element={<ChapterScreen />} />

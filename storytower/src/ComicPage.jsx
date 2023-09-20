@@ -1,37 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import './App.css';
 import client, { GET_STORIES } from './apolloClient';
 import LoadingScreen from './components/LoadingScreen';
 
 const ComicPage = () => {
-  const { page } = useParams()
+  const { page } = useParams();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [formattedData, setFormattedData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(page);
-
-  const fetchTotalStories = async () => {
-    try {
-      const { data } = await client.query({
-        query: GET_STORIES,
-        variables: { offset: 0, limit: 1 },
-      });
-      return data.getStories.totalStories;
-    } catch (error) {
-      console.error('Error fetching total stories:', error.message);
-      return 0;
-    }
-  };
-
+  const [currentPage, setCurrentPage] = useState(parseInt(page, 10) || 1); // Ensure currentPage is a number
+  const [totalStories, setTotalStories] = useState(0);
+  const [isLastPage, setIsLastPage] = useState(false);
+  
   const fetchData = async (page) => {
     try {
-      setLoading(true);
-      const offset = (page - 1) * 24;
-      const { data } = await client.query({
-        query: GET_STORIES,
-        variables: { offset, limit: 24 },
-      });
-      setFormattedData(data.getStories.data);
+      if (!loading) {
+        setLoading(true);
+        const offset = (page - 1) * 24;
+        const { data } = await client.query({
+          query: GET_STORIES,
+          variables: { offset, limit: 24 },
+        });
+        setFormattedData(data.getStories.data);
+        setTotalStories(data.getStories.totalStories);
+      }
     } catch (error) {
       console.error('Error fetching data:', error.message);
     } finally {
@@ -46,24 +39,36 @@ const ComicPage = () => {
     </div>
   );
 
-  useEffect(() => {
-    const loadPage = async () => {
-      const totalStories = await fetchTotalStories();
+  const loadPage = useCallback(
+    async (pageNumber) => {
       const lastPage = Math.max(1, Math.ceil(totalStories / 24));
-
-      if (isNaN(currentPage) || currentPage < 1) {
-        // Redirect to the first page
+      if (isNaN(pageNumber) || pageNumber < 1) {
         setCurrentPage(1);
-      } else if (currentPage > lastPage) {
-        // Redirect to the last available page
+      } else if (pageNumber > lastPage) {
         setCurrentPage(lastPage);
       } else {
-        fetchData(currentPage);
+        fetchData(pageNumber);
+        setCurrentPage(pageNumber);
+        setIsLastPage(pageNumber === lastPage);
       }
-    };
+    },
+    [totalStories]
+  );
 
-    loadPage();
+  useEffect(() => {
+    // Fetch data whenever the page number changes
+    fetchData(currentPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    // Update the currentPage when the component mounts
+    const parsedPage = parseInt(page, 10) || 1;
+    setCurrentPage(parsedPage);
+
+    // Fetch data based on the current location
+    const newPage = parseInt(location.pathname.split('/').pop(), 10) || 1;
+    loadPage(newPage);
+  }, [page, loadPage, location]);
 
   return (
     <div className="container">
@@ -80,13 +85,19 @@ const ComicPage = () => {
               ))}
             </div>
             <div className="pagination">
-              <Link to={`/comics/page/${currentPage - 1}`} disabled={currentPage === 1}>
-                <button onClick={() => setCurrentPage(prevPage => Math.max(prevPage - 1, 1))} disabled={currentPage === 1}>
+              <Link to={`/comics/page/${Math.max(currentPage - 1, 1)}`} disabled={loading}>
+                <button
+                  onClick={() => loadPage(Math.max(currentPage - 1, 1))}
+                  disabled={currentPage === 1}
+                >
                   Previous
                 </button>
               </Link>
-              <Link to={`/comics/page/${currentPage + 1}`} disabled={loading}>
-                <button onClick={() => setCurrentPage(prevPage => prevPage + 1)}>
+              <Link to={`/comics/page/${Math.min(currentPage + 1, Math.ceil(totalStories / 24))}`} disabled={loading || isLastPage}>
+                <button
+                  onClick={() => loadPage(Math.min(currentPage + 1, Math.ceil(totalStories / 24)))}
+                  disabled={isLastPage}
+                >
                   Next
                 </button>
               </Link>
