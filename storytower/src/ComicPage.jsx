@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './App.css';
 import client, { GET_STORIES } from './apolloClient';
 import LoadingScreen from './components/LoadingScreen';
 
-const ComicPage = ({ page }) => {
+const ComicPage = () => {
+  const { page } = useParams()
   const [loading, setLoading] = useState(true);
   const [formattedData, setFormattedData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(page);
+
+  const fetchTotalStories = async () => {
+    try {
+      const { data } = await client.query({
+        query: GET_STORIES,
+        variables: { offset: 0, limit: 1 },
+      });
+      return data.getStories.totalStories;
+    } catch (error) {
+      console.error('Error fetching total stories:', error.message);
+      return 0;
+    }
+  };
 
   const fetchData = async (page) => {
     try {
@@ -33,7 +47,22 @@ const ComicPage = ({ page }) => {
   );
 
   useEffect(() => {
-    fetchData(currentPage);
+    const loadPage = async () => {
+      const totalStories = await fetchTotalStories();
+      const lastPage = Math.max(1, Math.ceil(totalStories / 24));
+
+      if (isNaN(currentPage) || currentPage < 1) {
+        // Redirect to the first page
+        setCurrentPage(1);
+      } else if (currentPage > lastPage) {
+        // Redirect to the last available page
+        setCurrentPage(lastPage);
+      } else {
+        fetchData(currentPage);
+      }
+    };
+
+    loadPage();
   }, [currentPage]);
 
   return (
