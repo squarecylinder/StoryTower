@@ -1,3 +1,29 @@
+/* Add or modify CSS for your specific component */
 .cover-art {
-    height: 400px;
-}
+    width: 250px; /* Limit coverArt to 250px */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Ensure it's a block element */
+    margin: 0 auto; /* Center the image */
+  }
+  
+  .story-details {
+    text-align: center; /* Center the text content */
+    max-width: 400px; /* Set a maximum width for the content */
+    margin: 0 auto; /* Center the content */
+  }
+  
+  .story-details p {
+    margin: 10px 0; /* Add some spacing between paragraphs */
+  }
+  
+  .chapter-card {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+  }
+  
+  .chapter-card:hover {
+    background-color: #e0e0e0;
+  }
+  

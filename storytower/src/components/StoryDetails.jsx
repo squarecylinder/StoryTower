@@ -44,8 +44,8 @@ const StoryDetails = () => {
     }, [chapters]);
 
     return (
-        <div>
-            <h2>Story Details</h2>
+        <div className='story-details'>
+            <h2>{story.title}</h2>
             {story && (
                 <div>
                     <img
@@ -53,31 +53,32 @@ const StoryDetails = () => {
                         alt="Cover Art"
                         className="cover-art"
                     />
-                    <p>Title: {story.title}</p>
                     <p>Rating: {story.rating}</p>
                     <p>Last Updated: {story.lastUpdated}</p>
                     <p>Chapter Count: {story.chapterCount}</p>
                     <p>Synopsis: {story.synopsis}</p>
                     <p>Genres: {story.genres.join(', ')}</p>
-    
+
                     {/* Render chapters */}
                     {chapters.length > 0 && (
                         <div>
                             <h3>Chapter Titles</h3>
-                            <ul>
+                            <div className='chapter-cards'>
                                 {chapters.map((chapter, index) => (
-                                    <li key={index}>
-                                        <Link to={`/chapter/${chapter._id}`} state={chapter}>{chapter.title}</Link>
-                                    </li>
+                                    <Link to={`/chapter/${chapter._id}`} state={chapter}>
+                                        <div key={index} className='chapter-card'>
+                                            {chapter.title}
+                                        </div>
+                                    </Link>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
                     )}
                 </div>
             )}
         </div>
     );
-    
+
 };
 
 export default StoryDetails;
