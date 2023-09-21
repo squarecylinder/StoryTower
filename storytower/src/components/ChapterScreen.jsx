@@ -11,9 +11,9 @@ const replaceImageUrls = (imageUrls) => {
   return imageUrls.map((url) => {
     const replacedURL = url.replace(oldDomain, newDomain)
     const replacedURL2 = url.replace(anotherOldDomain, newDomain)
-    if (replacedURL != url) {
+    if (replacedURL !== url) {
       return replacedURL;
-    } else if (replacedURL2 != url) {
+    } else if (replacedURL2 !== url) {
       return replacedURL2
     } else return replacedURL
   });
