@@ -3,6 +3,7 @@ import { Link, useParams, useLocation } from 'react-router-dom';
 import './App.css';
 import client, { GET_STORIES } from './apolloClient';
 import LoadingScreen from './components/LoadingScreen';
+import debounce from 'lodash.debounce';
 
 const ComicPage = () => {
   const { page } = useParams();
@@ -12,9 +13,8 @@ const ComicPage = () => {
   const [currentPage, setCurrentPage] = useState(parseInt(page, 10) || 1); // Ensure currentPage is a number
   const [totalStories, setTotalStories] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
-  
-  const fetchData = async (page) => {
-    console.log("TEST")
+
+  const debouncedFetchData = debounce(async (page) => {
     try {
       if (!loading) {
         setLoading(true);
@@ -31,6 +31,10 @@ const ComicPage = () => {
     } finally {
       setLoading(false);
     }
+  }, 500); // Adjust the delay (in milliseconds) as needed
+  
+  const fetchData = (page) => {
+    debouncedFetchData(page);
   };
 
   const renderStoryItem = ({ item }) => (
@@ -72,11 +76,11 @@ const ComicPage = () => {
   }, [page, loadPage, location]);
 
   return (
-      <div className="contentContainer">
-        {loading ? (
-          <LoadingScreen />
-        ) : (
-          <>
+    <div className="contentContainer">
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <>
           <div className='container'>
             <div className="grid-container">
               {formattedData.map((item) => (
@@ -85,9 +89,10 @@ const ComicPage = () => {
                 </Link>
               ))}
             </div>
-            <div className="pagination">
+            <div className="paginationContainer">
               <Link to={`/comics/page/${Math.max(currentPage - 1, 1)}`} disabled={loading}>
                 <button
+                  className="paginationButton"
                   onClick={() => loadPage(Math.max(currentPage - 1, 1))}
                   disabled={currentPage === 1}
                 >
@@ -96,6 +101,7 @@ const ComicPage = () => {
               </Link>
               <Link to={`/comics/page/${Math.min(currentPage + 1, Math.ceil(totalStories / 24))}`} disabled={loading || isLastPage}>
                 <button
+                  className="paginationButton"
                   onClick={() => loadPage(Math.min(currentPage + 1, Math.ceil(totalStories / 24)))}
                   disabled={isLastPage}
                 >
@@ -103,9 +109,9 @@ const ComicPage = () => {
                 </button>
               </Link>
             </div>
-            </div>
-          </>
-        )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

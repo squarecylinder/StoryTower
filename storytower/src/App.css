@@ -42,29 +42,22 @@
 }
 
 .paginationContainer {
-  flex-direction: row;
-  justify-content: center;
-  margin-top: 16px;
-}
-
-.activePaginationButton {
-  background-color: gray;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.activePaginationButtonText {
-  color: white;
-  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px; /* Adjust padding to your preference */
 }
 
 .paginationButton {
-  padding: 8px 16px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin: 0 5px;
+  cursor: pointer;
 }
 
-.paginationButtonText {
-  font-size: 16px;
-}
-
-.ellipsis {
-  align-self: flex-end;
+.paginationButton:hover {
+  background-color: #2980b9;
 }
