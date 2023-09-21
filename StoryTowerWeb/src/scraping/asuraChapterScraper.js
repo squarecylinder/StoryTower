@@ -39,6 +39,7 @@ async function performAsuraChapterScraping() {
          && !story.link.includes('.gg') && !story.link.includes('.nacm.xyz') && !story.name.includes('discord')
          ) {
           await page.goto(newLink);
+          console.log(newLink)
           // Wait for the element to appear on the page (use the appropriate selector)
           await page.waitForSelector('.epcurfirst');
 
@@ -96,12 +97,14 @@ async function performAsuraChapterScraping() {
                 });
 
                 // Get the last chapter number from the database chapter call
-                const existingLastChapterNumber = parseInt(lastChapter.title.match(/Chapter (\d+)/)[1], 10);
+                const existingLastChapterNumber = parseInt(lastChapter.title.match(/chapter (\d+)/i)[1], 10);
 
                 const chapterDifference = lastChapterNumberOnSite - existingLastChapterNumber;
                 if (chapterDifference !== 0) {
                   const chapterIndex = chapterDifference - 1;
-                  const chapterURL = await page.evaluate(el => el.href, chapterElements[chapterIndex]); try {
+                  const newChapterLinkElement = await chapterElements[chapterIndex].$('a')
+                  const chapterURL = await page.evaluate(el => el.href, newChapterLinkElement); 
+                  try {
                     await scrapeChapterData(page, existingStory, chapterURL);
                   } catch (error) {
                     console.error(`Error while scraping chapter ${chapterTitle} for ${story.name}:`, error);
@@ -122,7 +125,7 @@ async function performAsuraChapterScraping() {
               try {
                 await newStory.save();
                 console.log(`${newStory} saved to the database.`);
-                await scrapeChapterData(page, existingStory, chapterTitle, firstChapterURL);
+                await scrapeChapterData(page, existingStory, firstChapterURL);
               } catch (error) {
                 console.error('Error while saving new story or scraping chapters:', error);
               }
