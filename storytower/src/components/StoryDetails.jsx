@@ -26,6 +26,12 @@ const StoryDetails = () => {
     if (chapterError) return <div>Error: {chapterError.message}</div>;
 
     const { story } = storyData;
+    const formattedDate = new Date(parseInt(story.lastUpdated)).toISOString();
+    const [year, month, day] = formattedDate.split('T')[0].split('-');
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const monthName = monthNames[parseInt(month) - 1]; // Adjust for 0-based index
+
+    const formattedDateString = `${monthName} ${day}, ${year}`;
 
     return (
         <div className="story-details">
@@ -34,7 +40,7 @@ const StoryDetails = () => {
                     <h2>{story.title}</h2>
                     <img src={story.coverArt} alt="Cover Art" className="cover-art" />
                     <p>Rating: {story.rating}</p>
-                    <p>Last Updated: {story.lastUpdated}</p>
+                    <p>Last Updated: {formattedDateString}</p>
                     <p>Chapter Count: {story.chapterCount}</p>
                     <p>Synopsis: {story.synopsis}</p>
                     <p>Genres: {story.genres.join(', ')}</p>
