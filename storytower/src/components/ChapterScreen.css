@@ -2,8 +2,12 @@
 .chapter-images-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
-  
+  .chapter-navigation {
+  flex: 1;
+  text-align: center;
+}
   .chapter-images-container img {
     width: 100%; /* Ensure images take the full width of the column */
     margin: 10px auto; /* Add some space between images */

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import _debounce from 'lodash.debounce'; // Import debounce from lodash
 import { SEARCH_STORIES_BY_TITLE } from '../apolloClient'; // Import your query
@@ -7,19 +7,17 @@ import './SearchBar.css'
 
 const SearchBar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('');
     const [getStories, { data }] = useLazyQuery(SEARCH_STORIES_BY_TITLE);
 
     const debouncedGetStories = _debounce((term) => {
         getStories({ variables: { title: term } });
     }, 300); // 300ms debounce interval
-
+    
     useEffect(() => {
-        if (!searchTerm) {
-          // Clear data if search term is empty
-          getStories({ variables: { title: '' } });
-        }
-      }, [searchTerm, getStories]);
+        setSearchTerm(''); // Clear search term when location changes
+      }, [location]);
 
     const handleChange = (e) => {
         const term = e.target.value;
@@ -44,7 +42,7 @@ const SearchBar = () => {
                 onChange={handleChange}
             />
             <button onClick={handleSearch}>Search</button>
-            {data && data.searchStoriesByTitle && (
+            {searchTerm && data && data.searchStoriesByTitle && (
                 <div className="suggestions">
                     {data.searchStoriesByTitle.map((suggestion) => (
                         <Link

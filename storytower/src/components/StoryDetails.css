@@ -16,6 +16,17 @@
     margin: 10px 0; /* Add some spacing between paragraphs */
   }
   
+  .chapter-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .chapter-links{
+    display: flex;
+    justify-content: space-between;
+  }
+
   .chapter-card {
     padding: 10px;
     margin: 10px 0;

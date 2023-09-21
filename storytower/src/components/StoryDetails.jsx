@@ -1,58 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams, Link } from 'react-router-dom';
-import client, { GET_CHAPTER_DETAILS, GET_STORY } from '../apolloClient';
-import "./StoryDetails.css"
+import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_STORY, GET_CHAPTER_DETAILS } from '../apolloClient';
+import './StoryDetails.css';
 
 const StoryDetails = () => {
     const { storyId } = useParams();
-    const location = useLocation();
-    const [story, setStory] = useState(location.state?.story);
+    const { loading: storyLoading, error: storyError, data: storyData } = useQuery(GET_STORY, {
+        variables: { id: storyId },
+    });
+
     const [chapters, setChapters] = useState([]);
+    const { loading: chapterLoading, error: chapterError, data: chapterData } = useQuery(GET_CHAPTER_DETAILS, {
+        variables: { chapterIds: storyData?.story?.chapters.map(chapter => chapter._id) || [] },
+    });
 
     useEffect(() => {
-        const fetchStoryDetails = async () => {
-            if (!story) {
-                try {
-                    const { data } = await client.query({
-                        query: GET_STORY,
-                        variables: { id: storyId }
-                    });
-                    setStory(data.story);
-                } catch (error) {
-                    console.error('Error fetching story details:', error.message);
-                }
-            } else {
-                try {
-                    const chapterIds = story?.chapters.map(chapter => chapter._id) || [];
-                    const { data } = await client.query({
-                        query: GET_CHAPTER_DETAILS,
-                        variables: { chapterIds },
-                    });
-                    setChapters(data.chapters);
-                    console.log('Chapter details:', data); // Adjust this based on the structure of your data
-                } catch (error) {
-                    console.error('Error fetching chapter details:', error.message);
-                }
-            }
-        };
+        if (!chapterLoading && !chapterError && chapterData && chapterData.chapters) {
+            setChapters(chapterData.chapters);
+        }
+    }, [chapterLoading, chapterError, chapterData]);
 
-        fetchStoryDetails();
-    }, [story, storyId]);
+    if (storyLoading || chapterLoading) return <div>Loading...</div>;
+    if (storyError) return <div>Error: {storyError.message}</div>;
+    if (chapterError) return <div>Error: {chapterError.message}</div>;
 
-    useEffect(() => {
-        console.log("CHAPTERS", chapters);
-    }, [chapters]);
+    const { story } = storyData;
 
     return (
-        <div className='story-details'>
-            <h2>{story.title}</h2>
+        <div className="story-details">
             {story && (
                 <div>
-                    <img
-                        src={story.coverArt}
-                        alt="Cover Art"
-                        className="cover-art"
-                    />
+                    <h2>{story.title}</h2>
+                    <img src={story.coverArt} alt="Cover Art" className="cover-art" />
                     <p>Rating: {story.rating}</p>
                     <p>Last Updated: {story.lastUpdated}</p>
                     <p>Chapter Count: {story.chapterCount}</p>
@@ -63,7 +43,15 @@ const StoryDetails = () => {
                     {chapters.length > 0 && (
                         <div>
                             <h3>Chapter Titles</h3>
-                            <div className='chapter-cards'>
+                            <div className="chapter-cards">
+                                <div className="chapter-links">
+                                    <Link to={`/chapter/${chapters[0]._id}`} state={chapters[0]} className="chapter-card">
+                                        First Chapter
+                                    </Link>
+                                    <Link to={`/chapter/${chapters[chapters.length - 1]._id}`} state={chapters[chapters.length - 1]} className="chapter-card">
+                                        Latest Chapter
+                                    </Link>
+                                </div>
                                 {chapters.map((chapter, index) => (
                                     <Link to={`/chapter/${chapter._id}`} state={chapter}>
                                         <div key={index} className='chapter-card'>
@@ -78,7 +66,6 @@ const StoryDetails = () => {
             )}
         </div>
     );
-
 };
 
 export default StoryDetails;
