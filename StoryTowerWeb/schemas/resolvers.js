@@ -17,7 +17,7 @@ const resolvers = {
     getStories: async (_, { offset = 0, limit = 10 }) => {
       try {
          // Use the offset and limit in the find query
-         const stories = await Story.find().sort({lastUpdated: -1}).skip(offset).limit(limit);
+         const stories = await Story.find().skip(offset).limit(limit);
 
          // Get the total number of stories without pagination
          const totalStories = await Story.countDocuments();
