@@ -3,6 +3,9 @@
   flex-wrap: wrap; /* Allow items to wrap into multiple rows */
   justify-content: space-around; /* Align items with some space in between */
 }
+.container {
+  flex: auto;
+}
 
 .grid-container {
   display: grid;

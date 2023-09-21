@@ -7,13 +7,14 @@ import LoadingScreen from './components/LoadingScreen';
 const ComicPage = () => {
   const { page } = useParams();
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [formattedData, setFormattedData] = useState([]);
   const [currentPage, setCurrentPage] = useState(parseInt(page, 10) || 1); // Ensure currentPage is a number
   const [totalStories, setTotalStories] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
   
   const fetchData = async (page) => {
+    console.log("TEST")
     try {
       if (!loading) {
         setLoading(true);
@@ -76,6 +77,7 @@ const ComicPage = () => {
           <LoadingScreen />
         ) : (
           <>
+          <div className='container'>
             <div className="grid-container">
               {formattedData.map((item) => (
                 <Link to={`/story/${item._id}`} state={{ story: item }} key={item._id}>
@@ -100,6 +102,7 @@ const ComicPage = () => {
                   Next
                 </button>
               </Link>
+            </div>
             </div>
           </>
         )}
