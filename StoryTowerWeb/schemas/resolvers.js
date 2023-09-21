@@ -44,13 +44,22 @@ const resolvers = {
     },
     story: async (_, { id }) => {
       try {
-        console.log('Story Resolver params', _, id)
         // Fetch story based on the provided ID
         const story = await Story.findById(id);
         return story;
       } catch (error) {
         console.error('Error fetching story:', error, id);
         throw new Error('Internal Server Error');
+      }
+    },
+    searchStoriesByTitle: async (_, { title }) => {
+      try {
+        // Perform a database query to search for stories by title
+        const stories = await Story.find({ title: { $regex: title, $options: 'i' } });
+
+        return stories;
+      } catch (error) {
+        throw new Error('Error searching stories by title');
       }
     },
   },

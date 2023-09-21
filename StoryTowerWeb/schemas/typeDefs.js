@@ -107,6 +107,7 @@ const typeDefs = gql`
     comments: [Comment]
     comment(id: ID!): Comment
     getStoryCatalog: [StoryCatalog]
+    searchStoriesByTitle(title: String!): [Story]
   }
 
   type Mutation {

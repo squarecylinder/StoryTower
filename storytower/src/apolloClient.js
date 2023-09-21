@@ -23,7 +23,25 @@ export const GET_STORY = gql`
       coverArt
     }
   }
-`
+`;
+
+export const SEARCH_STORIES_BY_TITLE = gql`
+  query searchStoriesByTitle($title: String!) {
+    searchStoriesByTitle(title: $title) {
+      _id
+      title
+      rating
+      lastUpdated
+      chapterCount
+      synopsis
+      genres
+      chapters {
+        _id
+      }
+      coverArt
+    }
+  }
+`;
 
 export const GET_STORY_CATALOG = gql`
   query getStoryCatalog {
