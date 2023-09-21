@@ -1,47 +1,69 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLazyQuery } from '@apollo/client';
+import _debounce from 'lodash.debounce'; // Import debounce from lodash
+import { SEARCH_STORIES_BY_TITLE } from '../apolloClient'; // Import your query
+import './SearchBar.css'
 
 const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [getStories, { data }] = useLazyQuery(SEARCH_STORIES_BY_TITLE);
 
-  const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+    const debouncedGetStories = _debounce((term) => {
+        getStories({ variables: { title: term } });
+    }, 300); // 300ms debounce interval
 
-  useEffect(() => {
-    // Implement debouncing to delay the search until the user pauses typing
-    const timeoutId = setTimeout(() => {
-      // Fetch suggestions based on the searchTerm from the server
-      // Update the suggestions state
-      // Example fetch call:
-      // fetchSuggestionsFromServer(searchTerm).then((data) => setSuggestions(data));
-    }, 300); // Adjust the delay as needed
+    useEffect(() => {
+        if (!searchTerm) {
+          // Clear data if search term is empty
+          getStories({ variables: { title: '' } });
+        }
+      }, [searchTerm, getStories]);
 
-    // Clear the timeout on component cleanup
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+    const handleChange = (e) => {
+        const term = e.target.value;
+        setSearchTerm(term);
+        debouncedGetStories(term); // Use the debounced function
+    };
 
-  return (
-    <div>
-      <input
-        type="text"
-        placeholder="Search stories..."
-        value={searchTerm}
-        onChange={handleInputChange}
-      />
-      <ul>
-        {suggestions.map((suggestion) => (
-          <li key={suggestion.id}>
-            {/* Highlight the matching part of the suggestion */}
-            {suggestion.title.replace(
-              new RegExp(searchTerm, 'gi'),
-              (match) => `<strong>${match}</strong>`
+    const handleSearch = () => {
+        // Handle the search logic, e.g., navigate to the appropriate page
+        // In this example, we're just navigating to the first story if available
+        if (data?.searchStoriesByTitle?.length > 0) {
+            navigate(`/story/${data.searchStoriesByTitle[0]._id}`);
+        }
+    };
+
+    return (
+        <div className="search-bar">
+            <input
+                type="text"
+                placeholder="Search for a story..."
+                value={searchTerm}
+                onChange={handleChange}
+            />
+            <button onClick={handleSearch}>Search</button>
+            {data && data.searchStoriesByTitle && (
+                <div className="suggestions">
+                    {data.searchStoriesByTitle.map((suggestion) => (
+                        <Link
+                            to={`/story/${suggestion._id}`}
+                            state={{ story: suggestion }}
+                            key={suggestion._id}
+                            className="suggestion-item"
+                        >
+                            {suggestion.title.split(new RegExp(`(${searchTerm})`, 'gi')).map((part, index) => (
+                                part.toLowerCase() === searchTerm.toLowerCase() ?
+                                    <strong key={index}>{part}</strong> :
+                                    part
+                            ))}
+                        </Link>
+                    ))}
+                </div>
             )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default SearchBar;
