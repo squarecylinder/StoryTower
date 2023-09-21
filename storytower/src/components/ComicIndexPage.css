@@ -27,9 +27,15 @@
   height: 100%;
 }
 
-.item img {
+@media (max-width: 767px) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Adjust the minmax width for mobile */
+  }
+}
+
+.coverArt {
   width: 100%;
-  height: auto;
+  height: 300px /* Maintain aspect ratio; cover the area */
 }
 
 .itemText {
@@ -38,7 +44,8 @@
 
 
 .coverArt {
-  height: auto; /* Adjust height of coverArt */
+  /* height: auto;
+   Adjust height of coverArt */
 }
 
 .paginationContainer {
