@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import BrowserRouter
 import { ApolloProvider } from '@apollo/client';
 import './index.css';
+import Header from './components/Header';
 import Home from './components/Home';
 import ComicIndexPage from './components/ComicIndexPage';
 import StoryDetails from './components/StoryDetails';
@@ -15,6 +16,7 @@ root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <Router>
+      <Header />
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route
