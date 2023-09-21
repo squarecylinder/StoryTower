@@ -23,7 +23,7 @@ const ChapterScreen = () => {
       {updatedImages.length > 0 && (
         <div className="chapter-images-container">
           {updatedImages.map((image, index) => (
-            <img key={index} src={image} alt={`Chapter Image ${index + 1}`} />
+            <img key={index} src={image} alt={`Chapter Page ${index + 1}`} />
           ))}
         </div>
       )}

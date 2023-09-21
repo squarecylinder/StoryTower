@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import './App.css';
-import client, { GET_STORIES } from './apolloClient';
-import LoadingScreen from './components/LoadingScreen';
+import './ComicIndexPage.css';
+import client, { GET_STORIES } from '../apolloClient';
+import LoadingScreen from './LoadingScreen';
 import debounce from 'lodash.debounce';
 
-const ComicPage = () => {
+const ComicIndexPage = () => {
   const { page } = useParams();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -116,4 +116,4 @@ const ComicPage = () => {
   );
 };
 
-export default ComicPage;
+export default ComicIndexPage;
