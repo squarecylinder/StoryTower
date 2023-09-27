@@ -6,7 +6,7 @@ async function performAsuraCatalogScraping() {
   console.log('Checking Asura.gg catalog...');
   const browser = await puppeteer.launch({ executablePath: executablePath});
   const page = await browser.newPage();
-  await page.goto('https://asuracomics.com/manga/list-mode');
+  await page.goto('https://asuracomics.gg/manga/list-mode');
 
   // Perform web scraping tasks here...
   const scrapedData = await page.evaluate(() => {
@@ -14,12 +14,14 @@ async function performAsuraCatalogScraping() {
     const manwhaData = [];
 
     manwhaContent.forEach((link) => {
-      const series = {
-        name: link.textContent,
-        link: link.href,
-        provider: "asura"
+      if(link.href !== 'https://asura.gg/discord'){
+        const series = {
+          name: link.textContent,
+          link: link.href,
+          provider: "asura"
+        }
+        manwhaData.push(series);
       }
-      manwhaData.push(series);
     })
 
     return manwhaData;

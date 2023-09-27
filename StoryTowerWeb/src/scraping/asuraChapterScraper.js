@@ -36,7 +36,7 @@ async function performAsuraChapterScraping() {
         // console.log(`Changing ${story.link} to ${newLink}`);
         const existingStory = await Story.findOne({ title: story.name });
         if (story.name != "(AD) Everyone Regressed Except Me" && story.name != "Discord"
-         && !story.link.includes('.gg') && !story.link.includes('.nacm.xyz') && !story.name.includes('discord')
+         && !story.name.includes('discord')
          ) {
           await page.goto(newLink);
           console.log(newLink)

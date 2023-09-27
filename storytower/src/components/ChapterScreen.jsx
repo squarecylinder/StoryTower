@@ -8,15 +8,19 @@ import { GET_STORY, GET_CHAPTER_DETAILS } from '../apolloClient';
 const replaceImageUrls = (imageUrls) => {
   const oldDomain = 'https://asura.gg';
   const anotherOldDomain = 'https://www.asurascans.com'
-  const newDomain = 'https://asuracomics.com';
+  const anotherAnotherOldDomain = 'https://www.asurascans.com'
+  const newDomain = 'https://asuracomics.gg';
 
   return imageUrls.map((url) => {
     const replacedURL = url.replace(oldDomain, newDomain)
     const replacedURL2 = url.replace(anotherOldDomain, newDomain)
+    const replacedURL3 = url.replace(anotherAnotherOldDomain, newDomain)
     if (replacedURL !== url) {
       return replacedURL;
     } else if (replacedURL2 !== url) {
       return replacedURL2
+    } else if (replacedURL3 !== url) {
+      return replacedURL3
     } else return replacedURL
   });
 };
