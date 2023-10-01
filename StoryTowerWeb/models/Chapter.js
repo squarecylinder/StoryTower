@@ -21,6 +21,10 @@ const chapterSchema = new mongoose.Schema({
     ref: 'Story',
     required: true,
   },
+  uploaded: {
+    type: Date,
+    default: Date.now,
+  }
   // Any other chapter-related fields you may need
 });
 

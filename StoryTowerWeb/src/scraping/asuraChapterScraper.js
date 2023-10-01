@@ -152,7 +152,6 @@ async function performAsuraChapterScraping() {
           return
         }
         try {
-          console.log(`In the scrape chapter data fnc ${chapterURL}`)
           // Navigate to the chapter page using the provided URL
           await page.goto(chapterURL, { timeout: 60000 });
 
@@ -175,7 +174,8 @@ async function performAsuraChapterScraping() {
           const newChapter = new Chapter({
             title: chapterTitle, // Use the extracted chapter title
             images: imageUrls, // Save the image URLs as an array of strings
-            story: existingStory._id
+            story: existingStory._id,
+            uploaded: new Date() //
           });
 
           await newChapter.save();
