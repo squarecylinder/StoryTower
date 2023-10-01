@@ -1,9 +1,12 @@
 // apolloClient.js
 import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client';
+
+const graphQLURI = process.env.NODE_ENV === 'production' ? 'https://storytowerserver.onrender.com/graphql' : 'http://localhost:3001/graphql'
+
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    uri:`https://storytowerserver.onrender.com/graphql`, // Replace with the correct API endpoint for your Apollo Server
+    uri: graphQLURI, // Replace with the correct API endpoint for your Apollo Server
   }),
 });
 

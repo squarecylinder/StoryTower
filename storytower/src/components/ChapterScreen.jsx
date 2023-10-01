@@ -9,18 +9,23 @@ const replaceImageUrls = (imageUrls) => {
   const oldDomain = 'https://asura.gg';
   const anotherOldDomain = 'https://www.asurascans.com'
   const anotherAnotherOldDomain = 'https://www.asurascans.com'
-  const newDomain = 'https://asuracomics.gg';
+  const newOldDomain = 'https://asuracomics.gg';
+  const newDomain = 'https://asuratoon.com/';
 
   return imageUrls.map((url) => {
+    //This is actually the biggest mess of all time. Why do they keep changing their domain.
     const replacedURL = url.replace(oldDomain, newDomain)
     const replacedURL2 = url.replace(anotherOldDomain, newDomain)
     const replacedURL3 = url.replace(anotherAnotherOldDomain, newDomain)
+    const replacedURL4 = url.replace(newOldDomain, newDomain)
     if (replacedURL !== url) {
       return replacedURL;
     } else if (replacedURL2 !== url) {
       return replacedURL2
     } else if (replacedURL3 !== url) {
       return replacedURL3
+    } else if (replacedURL4 !== url) {
+      return replacedURL4
     } else return replacedURL
   });
 };

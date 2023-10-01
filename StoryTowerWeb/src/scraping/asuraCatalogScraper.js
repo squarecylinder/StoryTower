@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer-core');
 const {executablePath} = require('./executablePath')
 
 async function performAsuraCatalogScraping() {
-  console.log('Checking Asura.gg catalog...');
+  console.log('Checking Asura catalog...');
   const browser = await puppeteer.launch({ executablePath: executablePath});
   const page = await browser.newPage();
   await page.goto('https://asuracomics.gg/manga/list-mode');

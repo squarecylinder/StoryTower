@@ -35,8 +35,9 @@ async function performAsuraChapterScraping() {
         const newLink = story.link.replace(oldDomain, newDomain);
         // console.log(`Changing ${story.link} to ${newLink}`);
         const existingStory = await Story.findOne({ title: story.name });
-        if (story.name != "(AD) Everyone Regressed Except Me" && story.name != "Discord"
+        if (story.name != "(AD) Everyone Regressed Except Me"
          && !story.name.includes('discord')
+         && !story.link.includes('.gg')
          ) {
           await page.goto(newLink);
           console.log(newLink)
@@ -180,6 +181,7 @@ async function performAsuraChapterScraping() {
           await newChapter.save();
           // Step 4: Associate the chapter with the story
           existingStory.chapters.push(newChapter);
+          existingStory.lastUpdated = new Date();
           await existingStory.save();
           console.log(`Saved ${chapterTitle} to ${existingStory.title}.`)
 
