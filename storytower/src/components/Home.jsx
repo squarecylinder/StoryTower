@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div>
       <h1>Welcome to StoryTower!</h1>
-      <Link to="/comics/page/1">Read All Comics</Link>
+      <Link to="/comics/genre/all/1">Read All Comics</Link>
     </div>
   );
 };
