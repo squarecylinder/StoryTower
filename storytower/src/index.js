@@ -19,8 +19,16 @@ root.render(
       <Header />
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route
+          {/* <Route
             path="/comics/page/:page"
+            element={<ComicIndexPage />}
+          /> */}
+          <Route
+            path="/comics/genre/all/:page"
+            element={<ComicIndexPage />}
+          />
+          <Route
+            path="/comics/genre/:genres/:page"
             element={<ComicIndexPage />}
           />
           <Route path="/story/:storyId" element={<StoryDetails />} />

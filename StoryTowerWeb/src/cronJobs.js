@@ -24,4 +24,4 @@ async function cronJob(){
 // }
 // );
 }
-cronJob();
+// cronJob();

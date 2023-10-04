@@ -109,7 +109,7 @@ const typeDefs = gql`
     comment(id: ID!): Comment
     getStoryCatalog: [StoryCatalog]
     searchStoriesByTitle(title: String!): [Story]
-    searchStoriesByGenre(genres: String!): [Story]
+    searchStoriesByGenre(genres: String!, offset: Int, limit: Int): StoryPagination!
   }
 
   type Mutation {

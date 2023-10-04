@@ -47,19 +47,22 @@ export const SEARCH_STORIES_BY_TITLE = gql`
 `;
 
 export const SEARCH_STORIES_BY_GENRE = gql`
-  query searchStoriesByGenre($genres: String!) {
-    searchStoriesByGenre(genres: $genre) {
-      _id
-      title
-      rating
-      lastUpdated
-      chapterCount
-      synopsis
-      genres
-      chapters {
+  query searchStoriesByGenre($genres: String!, $offset: Int, $limit: Int) {
+    searchStoriesByGenre(genres: $genres, offset: $offset, limit: $limit) {
+      data {
         _id
+        title
+        rating
+        lastUpdated
+        chapterCount
+        synopsis
+        genres
+        coverArt
+        chapters {
+          _id
+        }
       }
-      coverArt
+      totalStories
     }
   }
 `;
@@ -91,9 +94,9 @@ query getStories($offset: Int, $limit: Int) {
         _id
       }
     }
-  totalStories
-}
-}
+    totalStories
+    }
+  }
 `;
 
 export const GET_CHAPTER_DETAILS = gql`

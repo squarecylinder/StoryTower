@@ -17,7 +17,7 @@ const resolvers = {
     getStories: async (_, { offset = 0, limit = 10 }) => {
       try {
          // Use the offset and limit in the find query
-         const stories = await Story.find().skip(offset).limit(limit);
+         const stories = await Story.find().sort({lastUpdated: -1}).skip(offset).limit(limit);
 
          // Get the total number of stories without pagination
          const totalStories = await Story.countDocuments();
@@ -62,13 +62,20 @@ const resolvers = {
         throw new Error('Error searching stories by title');
       }
     },
-    searchStoriesByGenre: async (_, { genre }) => {
+    searchStoriesByGenre: async (_, { genres, offset = 0, limit = 10 }) => {
       try {
         // Perform a database query to search for stories by genre
-        const stories = await Story.find({ genres: { $regex: genre, $options: 'i' } });
+        const stories = await Story.find({ genres: { $regex: genres, $options: 'i' } }).sort({lastUpdated: -1}).skip(offset).limit(limit);
 
-        return stories;
+         // Get the total number of stories without pagination
+         const totalStories = await Story.find({ genres: { $regex: genres, $options: 'i' } }).countDocuments();
+         
+        return {
+          data: stories,
+          totalStories
+        }
       } catch (error) {
+        console.error('Error searching stories by genre:', error);
         throw new Error('Error searching stories by genre');
       }
     },
