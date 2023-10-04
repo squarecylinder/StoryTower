@@ -1,6 +1,6 @@
 // chapterScraping.js
 const puppeteer = require('puppeteer-core');
-const {executablePath} = require('./executablePath')
+const { executablePath } = require('./executablePath')
 const { Story, StoryCatalog, Chapter } = require('../../models');
 const oldDomain = 'https://asura.nacm.xyz'
 const newDomain = 'https://asuracomics.com'
@@ -27,7 +27,7 @@ async function performAsuraChapterScraping() {
 
   // Function to fetch the chapter links and images from a given story link
   async function getStoryInformation(storyCatalogArray) {
-    const browser = await puppeteer.launch({ executablePath: executablePath});
+    const browser = await puppeteer.launch({ executablePath: executablePath });
     const page = await browser.newPage();
 
     try {
@@ -36,9 +36,9 @@ async function performAsuraChapterScraping() {
         // console.log(`Changing ${story.link} to ${newLink}`);
         const existingStory = await Story.findOne({ title: story.name });
         if (story.name != "(AD) Everyone Regressed Except Me"
-         && !story.name.includes('discord')
-         && !story.link.includes('.gg')
-         ) {
+          && !story.name.includes('discord')
+          && !story.link.includes('.gg')
+        ) {
           await page.goto(newLink);
           console.log(newLink)
           // Wait for the element to appear on the page (use the appropriate selector)
@@ -76,13 +76,19 @@ async function performAsuraChapterScraping() {
               if (existingStory.synopsis !== synopsisText) {
                 existingStory.synopsis = synopsisText;
                 await existingStory.save();
-                console.log('Synopsis updated in the database.');
-              } 
+                console.log(`Updating Synopsis for ${existingStory.title}`);
+              }
 
-              if(existingStory.coverArt !== coverArtSrc){
+              if (existingStory.coverArt !== coverArtSrc) {
                 existingStory.coverArt = coverArtSrc
                 await existingStory.save()
-                console.log('Cover art updated in the database')
+                console.log(`Updating Cover art for ${existingStory.title}`)
+              }
+
+              if (existingStory.chapters.length !== existingStory.chapterCount) {
+                existingStory.chapterCount = existingStory.chapters.length
+                await existingStory.save()
+                console.log(`Updating chapter count for ${existingStory.title}`)
               }
 
               if (existingStory.chapters.length === 0) {
@@ -104,7 +110,7 @@ async function performAsuraChapterScraping() {
                 if (chapterDifference !== 0) {
                   const chapterIndex = chapterDifference - 1;
                   const newChapterLinkElement = await chapterElements[chapterIndex].$('a')
-                  const chapterURL = await page.evaluate(el => el.href, newChapterLinkElement); 
+                  const chapterURL = await page.evaluate(el => el.href, newChapterLinkElement);
                   try {
                     await scrapeChapterData(page, existingStory, chapterURL);
                   } catch (error) {
@@ -147,8 +153,7 @@ async function performAsuraChapterScraping() {
   async function scrapeChapterData(page, existingStory, chapterURL) {
     try {
       while (chapterURL) {
-        if (chapterURL.includes('discord'))
-        {
+        if (chapterURL.includes('discord')) {
           return
         }
         try {
