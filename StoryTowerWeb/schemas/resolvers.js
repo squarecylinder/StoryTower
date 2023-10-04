@@ -62,6 +62,16 @@ const resolvers = {
         throw new Error('Error searching stories by title');
       }
     },
+    searchStoriesByGenre: async (_, { genre }) => {
+      try {
+        // Perform a database query to search for stories by genre
+        const stories = await Story.find({ genres: { $regex: genre, $options: 'i' } });
+
+        return stories;
+      } catch (error) {
+        throw new Error('Error searching stories by genre');
+      }
+    },
   },
   Mutation: {
     addScrapedDataToCatalog,

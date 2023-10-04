@@ -175,7 +175,7 @@ async function performAsuraChapterScraping() {
             title: chapterTitle, // Use the extracted chapter title
             images: imageUrls, // Save the image URLs as an array of strings
             story: existingStory._id,
-            uploaded: new Date() //
+            uploaded: new Date()
           });
 
           await newChapter.save();
