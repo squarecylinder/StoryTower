@@ -19,12 +19,12 @@ const ComicIndexPage = () => {
   const formattedData = data?.getStories?.data || data?.searchStoriesByGenre?.data
 
   useEffect(() => {
-    if(isNaN(page) || page < 1 || (totalStories && page > Math.ceil(totalStories / 24))) {
+    if (isNaN(page) || page < 1 || (totalStories && page > Math.ceil(totalStories / 24))) {
       console.log(page, ' is the page')
       const validPage = totalStories ? Math.ceil(totalStories / 24) : 1;
       navigate(`/comics/genre/${genres}/${validPage}`)
     }
-  },[page, navigate, genres, totalStories])
+  }, [page, navigate, genres, totalStories])
 
 
   const renderStoryItem = ({ item }) => (
@@ -49,17 +49,19 @@ const ComicIndexPage = () => {
               ))}
             </div>
             <div className="paginationContainer">
-              <Link to={`/comics/genre/${genres}/${Math.max(page - 1, 1)}`} disabled={loading || parseInt(page) === 1}>
+              <Link to={`/comics/genre/${genres}/${Math.max(page - 1, 1)}`}>
                 <button
                   className="paginationButton"
+                  disabled={loading || parseInt(page) === 1}
                 >
                   Previous
                 </button>
               </Link>
               <Link to={`/comics/genre/${genres}/${Math.min(parseInt(page) + 1, Math.ceil(totalStories / 24))}
-              `} disabled={loading}>
+              `}>
                 <button
                   className="paginationButton"
+                  disabled={loading || parseInt(page) === (totalStories / 24)}
                 >
                   Next
                 </button>
