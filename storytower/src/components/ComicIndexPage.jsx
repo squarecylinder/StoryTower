@@ -1,31 +1,32 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useParams, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import './ComicIndexPage.css';
 import { GET_STORIES, SEARCH_STORIES_BY_GENRE } from '../apolloClient';
 import LoadingScreen from './LoadingScreen';
 
 const ComicIndexPage = () => {
+  const limit = 28;
   const navigate = useNavigate()
   const { page, genres } = useParams();
-  const { loading, error, data } = useQuery(genres == 'all' ? GET_STORIES : SEARCH_STORIES_BY_GENRE, {
+  const { loading, error, data } = useQuery(genres === 'All' ? GET_STORIES : SEARCH_STORIES_BY_GENRE, {
     variables: {
-      genres: genres || '',
-      offset: (page - 1) * 24,
-      limit: 24
+      genres: genres,
+      offset: (page - 1) * limit,
+      limit: limit
     }
   });
   const totalStories = data?.getStories?.totalStories || data?.searchStoriesByGenre?.totalStories
   const formattedData = data?.getStories?.data || data?.searchStoriesByGenre?.data
 
   useEffect(() => {
-    if (isNaN(page) || page < 1 || (totalStories && page > Math.ceil(totalStories / 24))) {
-      console.log(page, ' is the page')
-      const validPage = totalStories ? Math.ceil(totalStories / 24) : 1;
+    if (isNaN(page) || page < 1 || (totalStories && page > Math.ceil(totalStories / limit))) {
+      const validPage = totalStories ? Math.ceil(totalStories / limit) : 1;
       navigate(`/comics/genre/${genres}/${validPage}`)
     }
   }, [page, navigate, genres, totalStories])
 
+  if (error) return <p>{error}</p>
 
   const renderStoryItem = ({ item }) => (
     <div key={item._id}>
@@ -57,11 +58,11 @@ const ComicIndexPage = () => {
                   Previous
                 </button>
               </Link>
-              <Link to={`/comics/genre/${genres}/${Math.min(parseInt(page) + 1, Math.ceil(totalStories / 24))}
+              <Link to={`/comics/genre/${genres}/${Math.min(parseInt(page) + 1, Math.ceil(totalStories / limit))}
               `}>
                 <button
                   className="paginationButton"
-                  disabled={loading || parseInt(page) === (totalStories / 24)}
+                  disabled={loading || parseInt(page) === (totalStories / limit)}
                 >
                   Next
                 </button>
