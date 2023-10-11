@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import './ChapterScreen.css';
 import { GET_STORY, GET_CHAPTER_DETAILS } from '../apolloClient';
-
+import LoadingScreen from './LoadingScreen';
 // Replace image URLs with the new domain
 const replaceImageUrls = (imageUrls) => {
   const oldDomain = 'https://asura.gg';
@@ -41,86 +41,73 @@ const getCurrentChapterIndex = (story, currentChapterId) => {
   return currentIndex;
 };
 
-
 const ChapterScreen = () => {
   const { chapterId } = useParams();
   const navigate = useNavigate();
   // Initialize state for story details
-  const [story, setStory] = useState(null);
   const [previousChapterID, setPreviousChapterID] = useState(null);
   const [isPreviousDisabled, setIsPreviousDisabled] = useState(false);
   const [isNextDisabled, setIsNextDisabled] = useState(false);
   const [nextChapterID, setNextChapterID] = useState(null);
 
-  const [getChapter, { data: { chapters: [chapterData] = [] } = {}, loading: chapterLoading }] = useLazyQuery(GET_CHAPTER_DETAILS, {
-    variables: { chapterIds: [chapterId] }
-  });
-  
-
-  const [getStory] = useLazyQuery(GET_STORY, {
-    variables: { id: chapterData?.story?._id },
+  const { loading: chapterLoading, data: { chapters: [chapterData] = [] } = {} } = useQuery(GET_CHAPTER_DETAILS, {
+    variables: { chapterIds: chapterId },
     onCompleted: (data) => {
-      setStory(data.story);
+      const storyId = data.chapters[0].story._id;
+        getStory({ variables: { id: storyId } });
     },
   });
 
-  useEffect(() => {
-    // Fetch chapter details when component mounts or chapter changes
-    getChapter();
-  }, [getChapter, chapterId]);
-
-  useEffect(() => {
-    // Update chapterInformation when chapterData changes
-    if (!chapterLoading && chapterData) {
-      getStory()
+  const [getStory] = useLazyQuery(GET_STORY, {
+    onCompleted: (data) => {
+      const currentIndex = getCurrentChapterIndex(data.story, chapterData?._id)
+      if (currentIndex !== -1) {
+        setPreviousChapterID(data.story.chapters[currentIndex - 1]?._id)
+        setNextChapterID(data.story.chapters[currentIndex + 1]?._id)
+      }
+      setIsPreviousDisabled(!data.story.chapters[currentIndex - 1]?._id)
+      setIsNextDisabled(!data.story.chapters[currentIndex + 1]?._id)
     }
-  }, [chapterData, chapterLoading, getStory]);
+  })
 
-
-
-  useEffect(() => {
-    if(!chapterLoading){
-    const currentIndex = getCurrentChapterIndex(story, chapterData?._id);
-
-    if (currentIndex !== -1) {
-      setPreviousChapterID(story.chapters[currentIndex - 1]?._id)
-      setNextChapterID(story.chapters[currentIndex + 1]?._id)
-    }
-    setIsPreviousDisabled(previousChapterID ? false : true)
-    setIsNextDisabled(nextChapterID ? false : true)
-  }
-  }, [chapterLoading, chapterData?._id, story, isNextDisabled, isPreviousDisabled, nextChapterID, previousChapterID]);
-
+  const chapterImages = chapterData?.images
 
   // Update chapter images with the new domain
-  const updatedImages = chapterData?.images ? replaceImageUrls(chapterData.images) : [];
+  const updatedImages = chapterImages ? replaceImageUrls(chapterImages) : [];
 
   const goToPreviousChapter = () => {
-    if(previousChapterID) navigate(`/chapter/${previousChapterID}`);
+    if (previousChapterID) navigate(`/chapter/${previousChapterID}`);
   };
 
   const goToNextChapter = () => {
-    if(nextChapterID) navigate(`/chapter/${nextChapterID}`);
+    if (nextChapterID) navigate(`/chapter/${nextChapterID}`);
   };
 
   return (
     <div>
-      {updatedImages.length > 0 && (
-        <div className="chapter-images-container">
-      <h2>{chapterData?.title}</h2>
-          <div className="chapter-navigation">
-            <button disabled={isPreviousDisabled} onClick={goToPreviousChapter}>Previous Chapter</button>
-            <button disabled={isNextDisabled} onClick={goToNextChapter}>Next Chapter</button>
-          </div>
-          {updatedImages.map((image, index) => (
-            <img key={index} src={image} alt={`Chapter Page ${index + 1}`} />
-          ))}
-          <div className="chapter-navigation">
-            <button disabled={isPreviousDisabled} onClick={goToPreviousChapter}>Previous Chapter</button>
-            <button disabled={isNextDisabled} onClick={goToNextChapter}>Next Chapter</button>
-          </div>
-        </div>
-      )}
+      {chapterLoading ? (
+        <LoadingScreen />
+      ) : (
+        <>
+          {updatedImages.length > 0 && (
+            <div className="chapter-images-container">
+              <h2>{chapterData?.title}</h2>
+              <div className="chapter-navigation">
+                <button disabled={isPreviousDisabled} onClick={goToPreviousChapter}>Previous Chapter</button>
+                <button disabled={isNextDisabled} onClick={goToNextChapter}>Next Chapter</button>
+              </div>
+              {updatedImages.map((image, index) => (
+                <img key={index} src={image} alt={`Chapter Page ${index + 1}`} />
+              ))}
+              <div className="chapter-navigation">
+                <button disabled={isPreviousDisabled} onClick={goToPreviousChapter}>Previous Chapter</button>
+                <button disabled={isNextDisabled} onClick={goToNextChapter}>Next Chapter</button>
+              </div>
+            </div>
+          )}
+        </>
+      )
+      }
       {/* Render other chapter details */}
     </div>
   );

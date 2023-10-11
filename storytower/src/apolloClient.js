@@ -111,6 +111,7 @@ query getChapterDetails($chapterIds: [ID!]!) {
     story {
       _id
     }
+    uploaded
   }
 }
 `;

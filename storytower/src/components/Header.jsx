@@ -11,12 +11,12 @@ const Header = () => {
   }
   // Not a comprehensive list of genres. I don't know how to better check this, I was thinking of using a mongodb query that finds all the unique values that are in the genres field of a bunch of different stories maybe?
 
-  const genres = ['Action', 'Adventure', 'Fantasy', 'Isekai', 'Shounen', 'Supernatural', 'Necromancer', 'Returner', 'Martial Arts', 'Murim', 'Genius MC', 'Drama', 'Comedy', 'School Life', 'Video Games', 'Virtual Reality', 'Regression']
+  const genres = ['All', 'Action', 'Adventure', 'Fantasy', 'Isekai', 'Shounen', 'Supernatural', 'Necromancer', 'Returner', 'Martial Arts', 'Murim', 'Genius MC', 'Drama', 'Comedy', 'School Life', 'Video Games', 'Virtual Reality', 'Regression']
 
   return (
     <div className="header">
       <div className="logo">
-        <Link to="/comics/genre/all/1">Home</Link>
+        <Link to="/comics/genre/All/1">Home</Link>
       </div>
       <div className='dropdown'>
         <div className='dropdown-button' onClick={toggleDropdown}>

@@ -20,10 +20,6 @@ root.render(
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route
-            path="/comics/genre/all/:page"
-            element={<ComicIndexPage />}
-          />
-          <Route
             path="/comics/genre/:genres/:page"
             element={<ComicIndexPage />}
           />
