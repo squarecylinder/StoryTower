@@ -40,7 +40,6 @@ const startApolloServer = async () => {
       console.log('Connected to MongoDB.');
       // Start Apollo Server after the MongoDB connection is open
       const chapterDuplicates = await Story.aggregate(aggregationPipelineFindDuplicateChapters);
-      console.log(chapterDuplicates)
       if (chapterDuplicates.length > 0) {
         const [{ chapterIds }] = chapterDuplicates
         const foundChapters = await Chapter.find({ _id: chapterIds })

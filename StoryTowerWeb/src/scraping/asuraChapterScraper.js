@@ -36,7 +36,7 @@ async function performAsuraChapterScraping() {
           && !story.link.includes('.gg')
         ) {
           await page.goto(story.link);
-          // console.log(story.link)
+          console.log(story.link)
           // Wait for the element to appear on the page (use the appropriate selector)
           await page.waitForSelector('.epcurfirst');
 
@@ -99,7 +99,6 @@ async function performAsuraChapterScraping() {
                 const chapterDifference = totalChapters - chapterCount;
                 if (chapterDifference !== 0) {
                   const chapterIndex = chapterDifference - 1;
-                  // console.log(chapterIndex)
                   const newChapterLinkElement = await chapterElements[chapterIndex].$('a')
                   const chapterURL = await page.evaluate(el => el.href, newChapterLinkElement);
                   try {
@@ -107,8 +106,7 @@ async function performAsuraChapterScraping() {
                   } catch (error) {
                     console.error(`Error while scraping chapter ${chapterTitle} for ${story.name}:`, error);
                   }
-                } 
-                // else console.log(`${existingStory.title} has no new chapters. Last saved chapter ${existingLastChapterNumber}. Last chapter on site ${lastChapterNumberOnSite}.`)
+                }
               }
             } else {
               const newStory = new Story({
