@@ -18,7 +18,7 @@ const addScrapedDataToCatalog = async ({ scrapedData }) => {
         });
       } else {
         // Document already exists, skip saving
-        console.log(`Data with link: ${data.link} and provider: ${data.provider} already exists.`);
+        // console.log(`Data with link: ${data.link} and provider: ${data.provider} already exists.`);
       }
     }
 

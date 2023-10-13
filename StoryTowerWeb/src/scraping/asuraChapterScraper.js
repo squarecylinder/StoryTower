@@ -2,8 +2,6 @@
 const puppeteer = require('puppeteer-core');
 const { executablePath } = require('./executablePath')
 const { Story, StoryCatalog, Chapter } = require('../../models');
-const oldDomain = 'https://asura.nacm.xyz'
-const newDomain = 'https://asuracomics.com'
 
 async function performAsuraChapterScraping() {
   // Fetch only the links from the StoryCatalog collection
@@ -32,15 +30,13 @@ async function performAsuraChapterScraping() {
 
     try {
       for (const story of storyCatalogArray) {
-        const newLink = story.link.replace(oldDomain, newDomain);
-        // console.log(`Changing ${story.link} to ${newLink}`);
         const existingStory = await Story.findOne({ title: story.name });
         if (story.name != "(AD) Everyone Regressed Except Me"
           && !story.name.includes('discord')
           && !story.link.includes('.gg')
         ) {
-          await page.goto(newLink);
-          console.log(newLink)
+          await page.goto(story.link);
+          // console.log(story.link)
           // Wait for the element to appear on the page (use the appropriate selector)
           await page.waitForSelector('.epcurfirst');
 
@@ -94,21 +90,16 @@ async function performAsuraChapterScraping() {
               if (existingStory.chapters.length === 0) {
                 await scrapeChapterData(page, existingStory, firstChapterURL);
               } else {
-
-                const lastChapterId = existingStory.chapters[existingStory.chapters.length - 1];
-                const lastChapter = await Chapter.findById(lastChapterId)
-
+                const chapterCount = existingStory.chapters.length;
                 const lastChapterNumberOnSite = await page.evaluate(() => {
                   const chapterTitleElement = document.querySelector('.chapternum');
                   return parseInt(chapterTitleElement.textContent.match(/Chapter (\d+)/)[1], 10);
                 });
-
-                // Get the last chapter number from the database chapter call
-                const existingLastChapterNumber = parseInt(lastChapter.title.match(/chapter (\d+)/i)[1], 10);
-
-                const chapterDifference = lastChapterNumberOnSite - existingLastChapterNumber;
+                console.log(`${existingStory.title}: Total chapters on site ${totalChapters}, Total chapters in DB ${chapterCount}`)
+                const chapterDifference = totalChapters - chapterCount;
                 if (chapterDifference !== 0) {
                   const chapterIndex = chapterDifference - 1;
+                  // console.log(chapterIndex)
                   const newChapterLinkElement = await chapterElements[chapterIndex].$('a')
                   const chapterURL = await page.evaluate(el => el.href, newChapterLinkElement);
                   try {
@@ -116,7 +107,8 @@ async function performAsuraChapterScraping() {
                   } catch (error) {
                     console.error(`Error while scraping chapter ${chapterTitle} for ${story.name}:`, error);
                   }
-                } else console.log(`${existingStory.title} has no new chapters. Last saved chapter ${existingLastChapterNumber}. Last chapter on site ${lastChapterNumberOnSite}.`)
+                } 
+                // else console.log(`${existingStory.title} has no new chapters. Last saved chapter ${existingLastChapterNumber}. Last chapter on site ${lastChapterNumberOnSite}.`)
               }
             } else {
               const newStory = new Story({
@@ -131,8 +123,8 @@ async function performAsuraChapterScraping() {
               });
               try {
                 await newStory.save();
-                console.log(`${newStory} saved to the database.`);
-                await scrapeChapterData(page, existingStory, firstChapterURL);
+                console.log(`${newStory.title} saved to the database.`);
+                await scrapeChapterData(page, newStory, firstChapterURL);
               } catch (error) {
                 console.error('Error while saving new story or scraping chapters:', error);
               }
