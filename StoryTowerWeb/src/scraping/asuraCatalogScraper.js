@@ -14,7 +14,7 @@ async function performAsuraCatalogScraping() {
     const manwhaData = [];
 
     manwhaContent.forEach((link) => {
-      if(link.href !== 'https://asura.gg/discord'){
+      if(!link.textContent.includes('Discord')){
         const series = {
           name: link.textContent,
           link: link.href,
@@ -23,12 +23,10 @@ async function performAsuraCatalogScraping() {
         manwhaData.push(series);
       }
     })
-
     return manwhaData;
   });
 
   await browser.close();
-
   return scrapedData;
 }
 
