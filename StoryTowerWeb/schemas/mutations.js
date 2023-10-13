@@ -1,4 +1,4 @@
-const { StoryCatalog } = require('../models');
+const { StoryCatalog, User } = require('../models');
 
 const addScrapedDataToCatalog = async ({ scrapedData }) => {
   console.log('GraphQL mutation for adding scraped data to catalog is executed!');
@@ -29,6 +29,22 @@ const addScrapedDataToCatalog = async ({ scrapedData }) => {
   }
 };
 
+const createUser = async ({ email, username, password }) => {
+  console.log("FUUU")
+  try {
+    const user = new User({
+      email,
+      username,
+      password
+    });
+    const savedUser = await user.save();
+    return savedUser;
+  } catch(error) {
+    throw new Error('Error creating user: ' + error.message)
+  }
+}
+
 module.exports = {
   addScrapedDataToCatalog,
+  createUser,
 };

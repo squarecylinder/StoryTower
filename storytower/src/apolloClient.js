@@ -116,5 +116,23 @@ query getChapterDetails($chapterIds: [ID!]!) {
 }
 `;
 
+export const CREATE_USER = gql`
+mutation createUser($email: String!, $username: String!, $password: String!) {
+  createUser(email: $email, username: $username, password: $password) {
+    _id
+    email
+    username
+    profilePicture
+    bookmarkedStories {
+      _id
+      title
+    }
+    readChapters {
+      _id
+      title
+    }
+  }
+}
+`;
 
 export default client;

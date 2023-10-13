@@ -96,8 +96,8 @@ const Header = () => {
         )}
       </div>
       <div className="placeholder-tabs">
-        <Link to="#">Tab 1</Link>
-        <Link to="#">Tab 2</Link>
+        <Link to="/signup">SignUp</Link>
+        <Link to="/login">Login</Link>
       </div>
       <div className="search-bar">
         <SearchBar />

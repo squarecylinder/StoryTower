@@ -63,39 +63,6 @@ const typeDefs = gql`
     user: User!
   }
 
-  input CreateUserInput {
-    email: String!
-    username: String!
-    password: String!
-    profilePicture: String
-  }
-
-  input CreateStoryInput {
-    title: String!
-    rating: Float
-    lastUpdated: String
-    chapterCount: Int
-    synopsis: String
-    genres: [String]
-  }
-
-  input CreateChapterInput {
-    title: String!
-    images: [String]
-  }
-
-  input CreateCommentInput {
-    author: ID!
-    timestamp: String
-    content: String
-    story: ID!
-    chapter: ID!
-  }
-
-  input LoginUserInput {
-    email: String!
-    password: String!
-  }
 
   type Query {
     me: User
@@ -114,11 +81,7 @@ const typeDefs = gql`
 
   type Mutation {
     addScrapedDataToCatalog: [StoryCatalog!]!
-    createUser(input: CreateUserInput!): User
-    createStory(input: CreateStoryInput!): Story
-    createChapter(input: CreateChapterInput!): Chapter
-    createComment(input: CreateCommentInput!): Comment
-    loginUser(input: LoginUserInput!): Auth
+    createUser(email: String!, username: String!, password: String!): User
   }
 `;
 
