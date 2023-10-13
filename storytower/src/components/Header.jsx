@@ -9,9 +9,72 @@ const Header = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
-  // Not a comprehensive list of genres. I don't know how to better check this, I was thinking of using a mongodb query that finds all the unique values that are in the genres field of a bunch of different stories maybe?
 
-  const genres = ['All', 'Action', 'Adventure', 'Fantasy', 'Isekai', 'Shounen', 'Supernatural', 'Necromancer', 'Returner', 'Martial Arts', 'Murim', 'Genius MC', 'Drama', 'Comedy', 'School Life', 'Video Games', 'Virtual Reality', 'Regression']
+  const genres = [
+      "Psychological",
+      "Tragedy",
+      "Wuxia",
+      "Virtual World",
+      "Supernatural",
+      "Returned",
+      "Virtual Game",
+      "Adaptation",
+      "Cultivation",
+      "Seinen",
+      "Mystery",
+      "Magic",
+      "Another chance",
+      "Mature",
+      "Historical",
+      "Sci-fi",
+      "Drama",
+      "Isekai",
+      "Discord",
+      "Martial Arts",
+      "Romance",
+      "Overpowered",
+      "Sports",
+      "Suspense",
+      "apocalypse",
+      "Genius",
+      "Regression",
+      "Josei",
+      "Shoujo",
+      "Comedy",
+      "Murim",
+      "Crazy MC",
+      "Return",
+      "Hero",
+      "Returner",
+      "Necromancer",
+      "Dungeons",
+      "Shounen",
+      "System",
+      "Video Games",
+      "Action",
+      "Thriller",
+      "Revenge",
+      "Monsters",
+      "Slice of Life",
+      "Harem",
+      "Webtoon",
+      "School Life",
+      "Time Travel",
+      "Noble",
+      "tower",
+      "Video Game",
+      "Violence",
+      "Demon",
+      "Villain",
+      "Genius MC",
+      "Superhero",
+      "Reincarnation",
+      "Rebirth",
+      "Virtual Reality",
+      "Fantasy",
+      "Adventure",
+      "Game",
+    ]
 
   return (
     <div className="header">
@@ -33,13 +96,10 @@ const Header = () => {
         )}
       </div>
       <div className="placeholder-tabs">
-        {/* Placeholder tabs */}
         <Link to="#">Tab 1</Link>
         <Link to="#">Tab 2</Link>
       </div>
       <div className="search-bar">
-        {/* Your search bar JSX goes here */}
-        {/* <input type="text" placeholder="Search" /> */}
         <SearchBar />
       </div>
     </div>
