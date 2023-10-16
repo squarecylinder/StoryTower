@@ -1,6 +1,6 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User, Story, Comment, Chapter, StoryCatalog } = require('../models');
-const { addScrapedDataToCatalog, createUser, loginUser } = require('./mutations'); // Import the mutation function
+const { addScrapedDataToCatalog, createUser, loginUser, updateBookmarkStory } = require('./mutations'); // Import the mutation function
 
 const resolvers = {
   Query: {
@@ -83,6 +83,7 @@ const resolvers = {
     addScrapedDataToCatalog,
     createUser,
     loginUser,
+    updateBookmarkStory
   },
   User: {
     _id: (parent) => parent.user._id,

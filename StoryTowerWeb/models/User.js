@@ -36,14 +36,17 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
+    default: '',
   },
   bookmarkedStories: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Story',
+    default: [],
   }],
   readChapters: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Chapter',
+    default: [],
   }],
 });
 

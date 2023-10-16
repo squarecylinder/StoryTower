@@ -149,4 +149,16 @@ mutation loginUser($identifier: String!, $password: String!) {
 }
 `
 
+export const UPDATE_BOOKMARK = gql`
+mutation updateBookmarkStory($storyId: ID!, $userId: ID!){
+  updateBookmarkStory(storyId: $storyId, userId: $userId){
+    _id
+    bookmarkedStories {
+      _id
+      title
+      coverArt
+    }
+  }
+}`
+
 export default client;

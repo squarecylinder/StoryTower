@@ -38,7 +38,7 @@ const createUser = async (_, { email, username, password }) => {
     if (existingUser) {
       throw new Error('User with this email or username already exists.');
     }
-    const user = new User({ email, username, password });
+    const user = new User({ email, username, password});
     await user.save();
     return user;
   } catch (error) {
@@ -76,8 +76,28 @@ const loginUser = async (_, { identifier, password }) => {
   }
 }
 
+const updateBookmarkStory = async (_, { storyId, userId }) => {
+  try {
+    const user = await User.findById(userId);
+    if(!user) {
+      throw new Error('User not found');
+    }
+
+    const storyIndex = user.bookmarkedStories.indexOf(storyId);
+    if (storyIndex !== -1){
+      user.bookmarkedStories.splice(storyIndex, 1);
+    } else {
+      user.bookmarkedStories.push(storyId)
+    }
+    await user.save();
+    return user;
+  } catch (error) {
+    throw new Error(`Error updating bookmark: ${error.message}`)
+  }
+}
 module.exports = {
   addScrapedDataToCatalog,
   createUser,
-  loginUser
+  loginUser,
+  updateBookmarkStory
 };

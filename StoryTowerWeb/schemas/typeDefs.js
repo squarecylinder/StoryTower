@@ -84,6 +84,7 @@ const typeDefs = gql`
     addScrapedDataToCatalog: [StoryCatalog!]!
     createUser(email: String!, username: String!, password: String!): User
     loginUser(identifier: String!, password: String!): User
+    updateBookmarkStory(storyId: ID!, userId: ID!) : User 
   }
 `;
 

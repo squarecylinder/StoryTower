@@ -22,8 +22,8 @@ const App = ({intialLoggedIn, initialUser}) => {
             path="/comics/genre/:genres/:page"
             element={<ComicIndexPage />}
           />
-          <Route path="/story/:storyId" element={<StoryDetails />} />
-          <Route path="/chapter/:chapterId" element={<ChapterScreen />} />
+          <Route path="/story/:storyId" element={<StoryDetails isLoggedIn={isLoggedIn} user={user}/>} />
+          <Route path="/chapter/:chapterId" element={<ChapterScreen isLoggedIn={isLoggedIn} user={user}/>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login  setIsLoggedIn={setIsLoggedIn} setUser={setUser}/>} />
           <Route path='/account' element={<Account isLoggedIn={isLoggedIn} user={user}/>} />

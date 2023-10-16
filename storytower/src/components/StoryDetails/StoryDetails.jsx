@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { GET_STORY, GET_CHAPTER_DETAILS } from '../../apolloClient';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_STORY, GET_CHAPTER_DETAILS, UPDATE_BOOKMARK } from '../../apolloClient';
 import './StoryDetails.css';
 
 const getFormattedDate = (lastUpdated) => {
@@ -10,9 +10,9 @@ const getFormattedDate = (lastUpdated) => {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const monthName = monthNames[parseInt(month) - 1]; // Adjust for 0-based index
     return `${monthName} ${day}, ${year}`;
-  };
+};
 
-const StoryDetails = () => {
+const StoryDetails = ({ isLoggedIn, user }) => {
     const { storyId } = useParams();
     const { loading: storyLoading, error: storyError, data: storyData } = useQuery(GET_STORY, {
         variables: { id: storyId },
@@ -26,11 +26,25 @@ const StoryDetails = () => {
         }
     });
 
+    const [updateBookmarkStory] = useMutation(UPDATE_BOOKMARK)
+
     if (storyLoading || chapterLoading) return <div>Loading...</div>;
     if (storyError) return <div>Error: {storyError.message}</div>;
     if (chapterError) return <div>Error: {chapterError.message}</div>;
 
     const { story } = storyData;
+    const isBookmarked = null
+    console.log(user.bookmarkedStories)
+    // const isBookmarked = user ? user.bookmarkedStories.some(bookmarkedStory => bookmarkedStory._id === story._id) : false
+
+    const handleBookmarkClick = () => {
+        updateBookmarkStory({
+            variables: {
+                storyId: story._id,
+                userId: user._id,
+            },
+        });
+    };
 
     return (
         <div className="story-details">
@@ -43,14 +57,18 @@ const StoryDetails = () => {
                     <p>Chapter Count: {story.chapterCount}</p>
                     <p>Synopsis: {story.synopsis}</p>
                     <p>Genres: {story.genres.join(', ')}</p>
-
+                    {isLoggedIn && (
+                        <button onClick={handleBookmarkClick}>
+                            {isBookmarked ? 'Unbookmark' : 'Bookmark'}
+                        </button>
+                    )}
                     {/* Render chapters */}
                     {chapters.length > 0 && (
                         <div>
                             <h3>Chapter Titles</h3>
                             <div className="chapter-cards">
                                 <div className="chapter-links">
-                                    <Link to={`/chapter/${chapters[0]._id}`}className="chapter-card">
+                                    <Link to={`/chapter/${chapters[0]._id}`} className="chapter-card">
                                         First Chapter
                                     </Link>
                                     <Link to={`/chapter/${chapters[chapters.length - 1]._id}`} className="chapter-card">

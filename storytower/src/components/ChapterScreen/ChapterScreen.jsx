@@ -41,7 +41,7 @@ const getCurrentChapterIndex = (story, currentChapterId) => {
   return currentIndex;
 };
 
-const ChapterScreen = () => {
+const ChapterScreen = ({isLoggedIn, user}) => {
   const { chapterId } = useParams();
   const navigate = useNavigate();
   // Initialize state for story details
