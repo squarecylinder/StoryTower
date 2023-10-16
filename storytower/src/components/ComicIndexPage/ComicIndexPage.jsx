@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import './ComicIndexPage.css';
-import { GET_STORIES, SEARCH_STORIES_BY_GENRE } from '../apolloClient';
-import LoadingScreen from './LoadingScreen';
+import { GET_STORIES, SEARCH_STORIES_BY_GENRE } from '../../apolloClient';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
 const ComicIndexPage = () => {
   const limit = 28;

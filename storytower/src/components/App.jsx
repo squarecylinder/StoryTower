@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
-import Header from './Header';
+import Header from './Header/Header';
 import Home from './Home';
-import ComicIndexPage from './ComicIndexPage';
-import StoryDetails from './StoryDetails';
-import ChapterScreen from './ChapterScreen';
 import SignUp from './SignUp';
 import Login from './Login';
-import Account from './Account';
+import ComicIndexPage from './ComicIndexPage/ComicIndexPage';
+import StoryDetails from './StoryDetails/StoryDetails';
+import ChapterScreen from './ChapterScreen/ChapterScreen';
+import Account from './Account/Account';
 
 const App = ({intialLoggedIn, initialUser}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(intialLoggedIn);

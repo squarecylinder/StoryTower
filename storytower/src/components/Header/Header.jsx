@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css'
-import SearchBar from './SearchBar';
+import SearchBar from '../SearchBar/SearchBar';
 
 const Header = ({ isLoggedIn }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)

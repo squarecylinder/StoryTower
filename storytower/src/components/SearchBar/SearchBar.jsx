@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import _debounce from 'lodash.debounce'; // Import debounce from lodash
-import { SEARCH_STORIES_BY_TITLE } from '../apolloClient'; // Import your query
+import { SEARCH_STORIES_BY_TITLE } from '../../apolloClient'; // Import your query
 import './SearchBar.css'
 
 const SearchBar = () => {

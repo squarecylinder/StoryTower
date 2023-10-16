@@ -1,5 +1,6 @@
 // BookmarkGridView.js
 import React from 'react';
+import './Account.css'; // Import CSS
 
 const BookmarkGridView = ({bookmarkedStories}) => {
   return (

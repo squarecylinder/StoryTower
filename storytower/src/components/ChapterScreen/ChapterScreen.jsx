@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import './ChapterScreen.css';
-import { GET_STORY, GET_CHAPTER_DETAILS } from '../apolloClient';
-import LoadingScreen from './LoadingScreen';
+import { GET_STORY, GET_CHAPTER_DETAILS } from '../../apolloClient';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 // Replace image URLs with the new domain
 const replaceImageUrls = (imageUrls) => {
   const oldDomain = 'https://asura.gg';

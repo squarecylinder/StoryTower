@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { GET_STORY, GET_CHAPTER_DETAILS } from '../apolloClient';
+import { GET_STORY, GET_CHAPTER_DETAILS } from '../../apolloClient';
 import './StoryDetails.css';
 
 const getFormattedDate = (lastUpdated) => {

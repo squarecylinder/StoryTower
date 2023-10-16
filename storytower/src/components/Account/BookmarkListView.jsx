@@ -1,5 +1,6 @@
 // BookmarkListView.js
 import React from 'react';
+import './Account.css'; // Import CSS
 
 const BookmarkListView = ({bookmarkedStories}) => {
   return (
