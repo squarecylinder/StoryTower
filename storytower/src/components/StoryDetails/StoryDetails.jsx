@@ -26,16 +26,18 @@ const StoryDetails = ({ isLoggedIn, user }) => {
         }
     });
 
-    const [updateBookmarkStory] = useMutation(UPDATE_BOOKMARK)
+    const [updateBookmarkStory, {data: bookmarkData}] = useMutation(UPDATE_BOOKMARK)
 
     if (storyLoading || chapterLoading) return <div>Loading...</div>;
     if (storyError) return <div>Error: {storyError.message}</div>;
     if (chapterError) return <div>Error: {chapterError.message}</div>;
 
     const { story } = storyData;
-    const isBookmarked = null
-    console.log(user.bookmarkedStories)
-    // const isBookmarked = user ? user.bookmarkedStories.some(bookmarkedStory => bookmarkedStory._id === story._id) : false
+    const isBookmarked = bookmarkData?.updateBookmarkStory?.bookmarkedStories?.some(bookmarkedStory => {
+        return bookmarkedStory._id === story._id;
+      });
+      
+    console.log(bookmarkData?.updateBookmarkStory?.bookmarkedStories)
 
     const handleBookmarkClick = () => {
         updateBookmarkStory({

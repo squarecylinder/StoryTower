@@ -1,6 +1,4 @@
-const { StoryCatalog, User } = require('../models');
-const jwt = require('jsonwebtoken');
-const secretKey = process.env.JWT_SECRET || 'non-production-secret'; // Use a default if not set
+const { StoryCatalog, User, Story } = require('../models'); // Use a default if not set
 const { signToken } = require('../utils/auth.js');
 
 const addScrapedDataToCatalog = async ({ scrapedData }) => {
@@ -70,6 +68,7 @@ const loginUser = async (_, { identifier, password }) => {
       email: user.email,
       _id: user._id
     });
+    console.log(user)
     return { user, token }; // Return the token along with the user data
   } catch (error) {
     throw new Error(`Error logging in: ${error.message}`);
@@ -77,20 +76,23 @@ const loginUser = async (_, { identifier, password }) => {
 }
 
 const updateBookmarkStory = async (_, { storyId, userId }) => {
+  console.log(storyId, userId)
   try {
     const user = await User.findById(userId);
     if(!user) {
       throw new Error('User not found');
     }
-
+    console.log('before update' + user)
+    const story = await Story.findById(storyId)
     const storyIndex = user.bookmarkedStories.indexOf(storyId);
     if (storyIndex !== -1){
       user.bookmarkedStories.splice(storyIndex, 1);
     } else {
-      user.bookmarkedStories.push(storyId)
+      user.bookmarkedStories.push(story)
     }
+    console.log('after update' + user)
     await user.save();
-    return user;
+    return { _id: user._id, bookmarkedStories: user.bookmarkedStories};
   } catch (error) {
     throw new Error(`Error updating bookmark: ${error.message}`)
   }

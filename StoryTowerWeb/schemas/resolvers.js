@@ -89,6 +89,7 @@ const resolvers = {
     _id: (parent) => parent.user._id,
     email: (parent) => parent.user.email,
     username: (parent) => parent.user.username,
+    bookmarkedStories: (parent) => parent.bookmarkedStories,
     token: (parent) => parent.token
   }
 };
