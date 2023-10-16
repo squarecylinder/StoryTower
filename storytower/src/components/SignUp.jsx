@@ -21,9 +21,9 @@ const SignUp = () => {
         try {
           const { data } = await createUser({
             variables: {
-              email: "userData.email",
-              username: "userData.username",
-              password: "userData.password",
+              email: userData.email,
+              username: userData.username,
+              password: userData.password,
             },
           });
       

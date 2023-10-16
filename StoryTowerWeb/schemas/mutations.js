@@ -29,18 +29,17 @@ const addScrapedDataToCatalog = async ({ scrapedData }) => {
   }
 };
 
-const createUser = async ({ email, username, password }) => {
-  console.log("FUUU")
+const createUser = async (_, { email, username, password }) => {
   try {
-    const user = new User({
-      email,
-      username,
-      password
-    });
-    const savedUser = await user.save();
-    return savedUser;
-  } catch(error) {
-    throw new Error('Error creating user: ' + error.message)
+    const existingUser = await User.findOne({ $or: [{ email }, { username }]});
+    if (existingUser) {
+      throw new Error('User with this email or username already exists.');
+    }
+    const user = new User({email, username, password});
+    await user.save();
+    return user;
+  } catch (error) {
+    throw new Error('Error creating user: ' + error.message);
   }
 }
 
