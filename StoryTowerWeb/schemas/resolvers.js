@@ -7,10 +7,7 @@ const resolvers = {
     // Add resolver functions for queries here (e.g., users, user, stories, etc.)
     me: async (parent, args, context) => {
       try {
-        const user = await User.findById(context.user._id)
-        // Handle empty arrays
-        if (user.bookmarkedStories.length === 0) user.bookmarkedStories = null;
-        if (user.readChapters.length === 0) user.readChapters = null;
+        const user = await User.findById(context.user._id).populate('bookmarkedStories')
         console.log("IN THE ME" + user)
         return {user, token: context.user.token}
       } catch (error) {
@@ -94,6 +91,7 @@ const resolvers = {
     email: (parent) => parent.user.email,
     username: (parent) => parent.user.username,
     bookmarkedStories: (parent) => parent.user.bookmarkedStories,
+    readChapters: (parent) => parent.user.readChapters,
     token: (parent) => parent.token
   }
 };

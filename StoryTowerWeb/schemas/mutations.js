@@ -89,9 +89,7 @@ const updateBookmarkStory = async (_, { storyId, userId }) => {
     } else {
       user.bookmarkedStories.push(story)
     }
-    // console.log('after update' + user)
     await user.save();
-    console.log(user.bookmarkedStories)
     return {user};
   } catch (error) {
     throw new Error(`Error updating bookmark: ${error.message}`)
