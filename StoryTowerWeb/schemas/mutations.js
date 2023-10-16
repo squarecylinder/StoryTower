@@ -43,7 +43,33 @@ const createUser = async (_, { email, username, password }) => {
   }
 }
 
+const loginUser = async (_, { identifier, password }) => {
+  try {
+    // Find the user by either email or username
+    const user = await User.findOne({
+      $or: [{ email: identifier }, { username: identifier }],
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Check if the provided password matches the stored hashed password
+    const isCorrectPassword = await user.isCorrectPassword(password);
+
+    if (!isCorrectPassword) {
+      throw new Error('Invalid password');
+    }
+
+    // Password is correct, return the user
+    return user;
+  } catch (error) {
+    throw new Error(`Error logging in: ${error.message}`);
+  }
+}
+
 module.exports = {
   addScrapedDataToCatalog,
   createUser,
+  loginUser
 };

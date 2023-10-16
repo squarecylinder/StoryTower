@@ -9,6 +9,7 @@ import ComicIndexPage from './components/ComicIndexPage';
 import StoryDetails from './components/StoryDetails';
 import ChapterScreen from './components/ChapterScreen';
 import SignUp from './components/SignUp';
+import Login from './components/Login';
 import reportWebVitals from './reportWebVitals';
 import client from './apolloClient';
 
@@ -27,6 +28,7 @@ root.render(
           <Route path="/story/:storyId" element={<StoryDetails />} />
           <Route path="/chapter/:chapterId" element={<ChapterScreen />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Router>
     </ApolloProvider>

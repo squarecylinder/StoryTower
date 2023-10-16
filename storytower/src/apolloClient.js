@@ -122,6 +122,16 @@ mutation createUser($email: String!, $username: String!, $password: String!) {
     _id
     email
     username
+  }
+}
+`;
+
+export const LOGIN_USER = gql`
+mutation loginUser($identifier: String!, $password: String!) {
+  loginUser(identifier: $identifier, password: $password) {
+    _id
+    email
+    username
     profilePicture
     bookmarkedStories {
       _id
@@ -133,6 +143,7 @@ mutation createUser($email: String!, $username: String!, $password: String!) {
     }
   }
 }
-`;
+
+`
 
 export default client;
