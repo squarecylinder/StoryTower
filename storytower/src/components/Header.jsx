@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Header.css'
 import SearchBar from './SearchBar';
 
-const Header = () => {
+const Header = ({ isLoggedIn }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const toggleDropdown = () => {
@@ -98,6 +98,7 @@ const Header = () => {
       <div className="placeholder-tabs">
         <Link to="/signup">SignUp</Link>
         <Link to="/login">Login</Link>
+        {isLoggedIn && <Link to="/account">Account</Link>}
       </div>
       <div className="search-bar">
         <SearchBar />

@@ -1,6 +1,5 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User, Story, Comment, Chapter, StoryCatalog } = require('../models');
-const { signToken } = require('../utils/auth');
 const { addScrapedDataToCatalog, createUser, loginUser } = require('./mutations'); // Import the mutation function
 
 const resolvers = {
@@ -85,6 +84,12 @@ const resolvers = {
     createUser,
     loginUser,
   },
+  User: {
+    _id: (parent) => parent.user._id,
+    email: (parent) => parent.user.email,
+    username: (parent) => parent.user.username,
+    token: (parent) => parent.token
+  }
 };
 
 module.exports = resolvers

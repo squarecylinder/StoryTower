@@ -7,6 +7,9 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
     uri: graphQLURI, // Replace with the correct API endpoint for your Apollo Server
+    headers: {
+      authorization: localStorage.getItem('token') || '' // Attach token to headers
+    }
   }),
 });
 
@@ -141,9 +144,9 @@ mutation loginUser($identifier: String!, $password: String!) {
       _id
       title
     }
+    token
   }
 }
-
 `
 
 export default client;

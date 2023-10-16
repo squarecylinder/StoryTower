@@ -1,4 +1,7 @@
 const { StoryCatalog, User } = require('../models');
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.JWT_SECRET || 'non-production-secret'; // Use a default if not set
+const { signToken } = require('../utils/auth.js');
 
 const addScrapedDataToCatalog = async ({ scrapedData }) => {
   console.log('GraphQL mutation for adding scraped data to catalog is executed!');
@@ -31,11 +34,11 @@ const addScrapedDataToCatalog = async ({ scrapedData }) => {
 
 const createUser = async (_, { email, username, password }) => {
   try {
-    const existingUser = await User.findOne({ $or: [{ email }, { username }]});
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
       throw new Error('User with this email or username already exists.');
     }
-    const user = new User({email, username, password});
+    const user = new User({ email, username, password });
     await user.save();
     return user;
   } catch (error) {
@@ -61,8 +64,13 @@ const loginUser = async (_, { identifier, password }) => {
       throw new Error('Invalid password');
     }
 
-    // Password is correct, return the user
-    return user;
+    // If credentials are correct, generate a JWT
+    const token = signToken({
+      username: user.username,
+      email: user.email,
+      _id: user._id
+    });
+    return { user, token }; // Return the token along with the user data
   } catch (error) {
     throw new Error(`Error logging in: ${error.message}`);
   }

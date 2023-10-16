@@ -1,0 +1,56 @@
+/* Account.css */
+
+/* Profile Styles */
+.profile-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-picture {
+    width: 100px;
+    height: 100px;
+    background-color: gray; /* Placeholder color */
+    border-radius: 50%;
+    margin-right: 20px;
+  }
+  
+  .username {
+    font-size: 24px;
+  }
+  
+  /* Toggle Button Styles */
+  .toggle-view {
+    margin-bottom: 20px;
+  }
+  
+  /* Bookmark Styles for List View */
+  .bookmark-list {
+    padding: 0;
+  }
+  
+  .bookmark-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+  
+  /* Bookmark Styles for Grid View */
+  .bookmark-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 10px;
+  }
+  
+  .bookmark-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .bookmark-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  

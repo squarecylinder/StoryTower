@@ -8,6 +8,7 @@ const typeDefs = gql`
     profilePicture: String
     bookmarkedStories: [Story]
     readChapters: [Chapter]
+    token: String!
   }
   
   type Manwha {
