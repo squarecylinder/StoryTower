@@ -68,21 +68,21 @@ const loginUser = async (_, { identifier, password }) => {
       email: user.email,
       _id: user._id
     });
-    console.log(user)
-    return { user, token }; // Return the token along with the user data
+    console.log('In the mutation:' + user)
+    return { user, token, contextUser: user }; // Return the token along with the user data
   } catch (error) {
     throw new Error(`Error logging in: ${error.message}`);
   }
 }
 
 const updateBookmarkStory = async (_, { storyId, userId }) => {
-  console.log(storyId, userId)
+  // console.log(storyId, userId)
   try {
     const user = await User.findById(userId);
     if(!user) {
       throw new Error('User not found');
     }
-    console.log('before update' + user)
+    // console.log('before update' + user)
     const story = await Story.findById(storyId)
     const storyIndex = user.bookmarkedStories.indexOf(storyId);
     if (storyIndex !== -1){
@@ -90,9 +90,9 @@ const updateBookmarkStory = async (_, { storyId, userId }) => {
     } else {
       user.bookmarkedStories.push(story)
     }
-    console.log('after update' + user)
+    // console.log('after update' + user)
     await user.save();
-    return { _id: user._id, bookmarkedStories: user.bookmarkedStories};
+    return {user};
   } catch (error) {
     throw new Error(`Error updating bookmark: ${error.message}`)
   }

@@ -6,12 +6,7 @@ const resolvers = {
   Query: {
     // Add resolver functions for queries here (e.g., users, user, stories, etc.)
     me: async (parent, args, context) => {
-      if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id}).select('-__v -password');
-
-        return userData;
-      }
-      throw new AuthenticationError('Not Logged In');
+      console.log('IN THE ME', context.user)
     },
     getStories: async (_, { offset = 0, limit = 10 }) => {
       try {
@@ -89,7 +84,7 @@ const resolvers = {
     _id: (parent) => parent.user._id,
     email: (parent) => parent.user.email,
     username: (parent) => parent.user.username,
-    bookmarkedStories: (parent) => parent.bookmarkedStories,
+    bookmarkedStories: (parent) => parent.user.bookmarkedStories,
     token: (parent) => parent.token
   }
 };

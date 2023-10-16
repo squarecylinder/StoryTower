@@ -1,7 +1,7 @@
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const path = require('path');
-const authMiddleware = require('./utils/auth');
+const { authMiddleware } = require('./utils/auth');
 const Story = require('./models/Story')
 const Chapter = require('./models/Chapter')
 const aggregationPipelineFindDuplicateChapters = require('./src/aggregationPipelineFindDuplicateChapters')

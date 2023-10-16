@@ -13,6 +13,24 @@ const client = new ApolloClient({
   }),
 });
 
+export const GET_ME = gql`
+query {
+  me {
+    _id
+    email
+    username
+    profilePicture
+    bookmarkedStories {
+      _id
+      title
+    }
+    readChapters {
+      _id
+    }
+    token
+  }
+}`
+
 export const GET_STORY = gql`
   query getStory($id: ID!){
     story(id: $id){

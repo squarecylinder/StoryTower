@@ -2,8 +2,7 @@ const jwt = require('jsonwebtoken');
 const secretKey = process.env.JWT_SECRET || 'non-production-secret';
 const expiration = '6h';
 
-module.exports = {
-  authMiddleware: function ({ req }) {
+const authMiddleware = ({ req }) => {
     let token = req.body.token || req.query.token || req.headers.authorization;
 
     if (req.headers.authorization) {
@@ -21,10 +20,12 @@ module.exports = {
       console.log('Invalid Token');
     }
     return req;
-  },
-  signToken: function({ username, email, _id }) {
+  }
+
+  const signToken = ({ username, email, _id }) => {
     const payload = { username, email, _id };
 
     return jwt.sign({ data: payload }, secretKey, { expiresIn: expiration })
   }
-};
+
+  module.exports = { authMiddleware, signToken };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_STORY, GET_CHAPTER_DETAILS, UPDATE_BOOKMARK } from '../../apolloClient';
+import { GET_STORY, GET_CHAPTER_DETAILS, UPDATE_BOOKMARK, GET_ME } from '../../apolloClient';
 import './StoryDetails.css';
 
 const getFormattedDate = (lastUpdated) => {
@@ -14,6 +14,12 @@ const getFormattedDate = (lastUpdated) => {
 
 const StoryDetails = ({ isLoggedIn, user }) => {
     const { storyId } = useParams();
+    const { loading: meLoading, error: meError, data: meData } = useQuery(GET_ME, {
+        onCompleted: (test) => {
+            console.log("test")
+            console.log("meData")
+        }
+    })
     const { loading: storyLoading, error: storyError, data: storyData } = useQuery(GET_STORY, {
         variables: { id: storyId },
     });
@@ -38,6 +44,7 @@ const StoryDetails = ({ isLoggedIn, user }) => {
       });
       
     console.log(bookmarkData?.updateBookmarkStory?.bookmarkedStories)
+    console.log(meData)
 
     const handleBookmarkClick = () => {
         updateBookmarkStory({
