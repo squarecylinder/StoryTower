@@ -5,6 +5,7 @@ import './index.css';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import client from './apolloClient';
+import AuthProvider from './AuthProvider';
 
 const token = localStorage.getItem('token');
 const intialLoggedIn = !!token;
@@ -15,7 +16,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-        <App intialLoggedIn={intialLoggedIn} initialUser={initialUser}/>
+      <AuthProvider>
+        <App intialLoggedIn={intialLoggedIn} initialUser={initialUser} />
+      </AuthProvider>
     </ApolloProvider>
   </React.StrictMode>
 );
