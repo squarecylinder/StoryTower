@@ -2,15 +2,15 @@ import React, { createContext, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ME } from './apolloClient';
 
+const AuthContext = createContext();
+
 const AuthProvider = ({ children }) => {
-  const AuthContext = createContext();
 
   // Fetch user data
   const { data, refetch } = useQuery(GET_ME);
 
   // Use data?.me to access user data
   const user = data?.me;
-console.log(user)
   const [loggedIn, setLoggedIn] = useState(!!user);
 
   const login = (userData) => {
@@ -33,4 +33,4 @@ console.log(user)
   );
 };
 
-export default AuthProvider;
+export { AuthProvider, AuthContext };

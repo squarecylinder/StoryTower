@@ -1,17 +1,24 @@
 // Account.js
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import Profile from './Profile';
 import BookmarkListView from './BookmarkListView';
 import BookmarkGridView from './BookmarkGridView';
+import  { AuthContext } from '../../AuthProvider';
 import './Account.css';
 
-const Account = ({isLoggedIn, user}) => {
+const Account = ({isLoggedIn}) => {
+  const { user } = useContext(AuthContext);
   const [isGridView, setIsGridView] = useState(false);
 
   const handleViewToggle = () => {
     setIsGridView(!isGridView);
   };
+
+  if(!user){
+    return <LoadingScreen />
+  }
 
   if (!isLoggedIn) {
     // Navigate to login page if not logged in
@@ -20,7 +27,7 @@ const Account = ({isLoggedIn, user}) => {
 
   return (
     <div className="account-container">
-      <Profile user={user}/>
+      {/* <Profile user={user}/> */}
       <div className="toggle-view">
         <button onClick={handleViewToggle}>
           {isGridView ? 'Switch to List View' : 'Switch to Grid View'}

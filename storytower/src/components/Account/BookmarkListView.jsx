@@ -6,7 +6,7 @@ const BookmarkListView = ({bookmarkedStories}) => {
   return (
     <div>
       <h2>My Bookmarks (List View)</h2>
-      <div>WIP Bookmark {bookmarkedStories} List</div>
+      <div>WIP Bookmark List</div>
     </div>
   );
 };

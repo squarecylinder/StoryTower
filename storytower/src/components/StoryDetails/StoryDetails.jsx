@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_STORY, GET_CHAPTER_DETAILS, UPDATE_BOOKMARK, GET_ME } from '../../apolloClient';
+import  { AuthContext } from '../../AuthProvider';
 import './StoryDetails.css';
 
 const getFormattedDate = (lastUpdated) => {
@@ -12,10 +13,11 @@ const getFormattedDate = (lastUpdated) => {
     return `${monthName} ${day}, ${year}`;
 };
 
-const StoryDetails = ({ isLoggedIn, user }) => {
+const StoryDetails = ({ isLoggedIn}) => {
     const { storyId } = useParams();
     const [updateBookmarkStory] = useMutation(UPDATE_BOOKMARK)
-    const { loading: meLoading, error: meError, data: meData } = useQuery(GET_ME)
+    const { user } = useContext(AuthContext);
+    // const { loading: meLoading, error: meError, data: meData } = useQuery(GET_ME)
     const { loading: storyLoading, error: storyError, data: storyData } = useQuery(GET_STORY, {
         variables: { id: storyId },
     });
@@ -28,20 +30,16 @@ const StoryDetails = ({ isLoggedIn, user }) => {
         }
     });
 
-
-    if (storyLoading || chapterLoading || meLoading) return <div>Loading...</div>;
+    if (storyLoading || chapterLoading) return <div>Loading...</div>;
     if (storyError) return <div>Error: {storyError.message}</div>;
     if (chapterError) return <div>Error: {chapterError.message}</div>;
     // if (meError) return <div>Error: {meError.message}</div>;
 
     const { story } = storyData;
 
-    const isBookmarked = meData?.me?.bookmarkedStories?.some(bookmarkedStory => {
+    const isBookmarked = user?.bookmarkedStories?.some(bookmarkedStory => {
         return bookmarkedStory._id === story._id;
       }) || false; // Default to false if data is not available yet
-      
-    console.log(meData)
-    console.log(isBookmarked)
 
     const handleBookmarkClick = () => {
         updateBookmarkStory({

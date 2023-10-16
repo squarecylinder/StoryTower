@@ -11,7 +11,7 @@ import Account from './Account/Account';
 
 const App = ({intialLoggedIn, initialUser}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(intialLoggedIn);
-  const [user, setUser] = useState(initialUser);
+  // const [user, setUser] = useState(initialUser);
 
   return (
     <Router>
@@ -22,11 +22,11 @@ const App = ({intialLoggedIn, initialUser}) => {
             path="/comics/genre/:genres/:page"
             element={<ComicIndexPage />}
           />
-          <Route path="/story/:storyId" element={<StoryDetails isLoggedIn={isLoggedIn} user={user}/>} />
-          <Route path="/chapter/:chapterId" element={<ChapterScreen isLoggedIn={isLoggedIn} user={user}/>} />
+          <Route path="/story/:storyId" element={<StoryDetails isLoggedIn={isLoggedIn}/>} />
+          <Route path="/chapter/:chapterId" element={<ChapterScreen isLoggedIn={isLoggedIn}/>} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login  setIsLoggedIn={setIsLoggedIn} setUser={setUser}/>} />
-          <Route path='/account' element={<Account isLoggedIn={isLoggedIn} user={user}/>} />
+          <Route path="/login" element={<Login  setIsLoggedIn={setIsLoggedIn} />} />
+          <Route path='/account' element={<Account isLoggedIn={isLoggedIn}/>} />
         </Routes>
     </Router>
   );

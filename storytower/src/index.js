@@ -5,7 +5,7 @@ import './index.css';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import client from './apolloClient';
-import AuthProvider from './AuthProvider';
+import { AuthProvider } from './AuthProvider';
 
 const token = localStorage.getItem('token');
 const intialLoggedIn = !!token;

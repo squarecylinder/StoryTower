@@ -8,7 +8,6 @@ const resolvers = {
     me: async (parent, args, context) => {
       try {
         const user = await User.findById(context.user._id).populate('bookmarkedStories')
-        console.log("IN THE ME" + user)
         return {user, token: context.user.token}
       } catch (error) {
         throw new AuthenticationError('Not logged in')
