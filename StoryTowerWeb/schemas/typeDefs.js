@@ -6,8 +6,8 @@ const typeDefs = gql`
     email: String!
     username: String!
     profilePicture: String
-    bookmarkedStories: [Story]
-    readChapters: [Chapter]
+    bookmarkedStories: [Story]!
+    readChapters: [Chapter]!
     token: String!
   }
   

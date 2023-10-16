@@ -23,6 +23,7 @@ query {
     bookmarkedStories {
       _id
       title
+      coverArt
     }
     readChapters {
       _id

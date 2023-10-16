@@ -14,12 +14,8 @@ const getFormattedDate = (lastUpdated) => {
 
 const StoryDetails = ({ isLoggedIn, user }) => {
     const { storyId } = useParams();
-    const { loading: meLoading, error: meError, data: meData } = useQuery(GET_ME, {
-        onCompleted: (test) => {
-            console.log("test")
-            console.log("meData")
-        }
-    })
+    const [updateBookmarkStory] = useMutation(UPDATE_BOOKMARK)
+    const { loading: meLoading, error: meError, data: meData } = useQuery(GET_ME)
     const { loading: storyLoading, error: storyError, data: storyData } = useQuery(GET_STORY, {
         variables: { id: storyId },
     });
@@ -32,19 +28,20 @@ const StoryDetails = ({ isLoggedIn, user }) => {
         }
     });
 
-    const [updateBookmarkStory, {data: bookmarkData}] = useMutation(UPDATE_BOOKMARK)
 
-    if (storyLoading || chapterLoading) return <div>Loading...</div>;
+    if (storyLoading || chapterLoading || meLoading) return <div>Loading...</div>;
     if (storyError) return <div>Error: {storyError.message}</div>;
     if (chapterError) return <div>Error: {chapterError.message}</div>;
+    // if (meError) return <div>Error: {meError.message}</div>;
 
     const { story } = storyData;
-    const isBookmarked = bookmarkData?.updateBookmarkStory?.bookmarkedStories?.some(bookmarkedStory => {
+
+    const isBookmarked = meData?.me?.bookmarkedStories?.some(bookmarkedStory => {
         return bookmarkedStory._id === story._id;
-      });
+      }) || false; // Default to false if data is not available yet
       
-    console.log(bookmarkData?.updateBookmarkStory?.bookmarkedStories)
     console.log(meData)
+    console.log(isBookmarked)
 
     const handleBookmarkClick = () => {
         updateBookmarkStory({

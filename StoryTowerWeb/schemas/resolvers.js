@@ -6,7 +6,16 @@ const resolvers = {
   Query: {
     // Add resolver functions for queries here (e.g., users, user, stories, etc.)
     me: async (parent, args, context) => {
-      console.log('IN THE ME', context.user)
+      try {
+        const user = await User.findById(context.user._id)
+        // Handle empty arrays
+        if (user.bookmarkedStories.length === 0) user.bookmarkedStories = null;
+        if (user.readChapters.length === 0) user.readChapters = null;
+        console.log("IN THE ME" + user)
+        return {user, token: context.user.token}
+      } catch (error) {
+        throw new AuthenticationError('Not logged in')
+      }
     },
     getStories: async (_, { offset = 0, limit = 10 }) => {
       try {

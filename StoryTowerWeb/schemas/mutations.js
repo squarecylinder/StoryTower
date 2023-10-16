@@ -68,8 +68,7 @@ const loginUser = async (_, { identifier, password }) => {
       email: user.email,
       _id: user._id
     });
-    console.log('In the mutation:' + user)
-    return { user, token, contextUser: user }; // Return the token along with the user data
+    return { user, token}; // Return the token along with the user data
   } catch (error) {
     throw new Error(`Error logging in: ${error.message}`);
   }
@@ -92,6 +91,7 @@ const updateBookmarkStory = async (_, { storyId, userId }) => {
     }
     // console.log('after update' + user)
     await user.save();
+    console.log(user.bookmarkedStories)
     return {user};
   } catch (error) {
     throw new Error(`Error updating bookmark: ${error.message}`)
