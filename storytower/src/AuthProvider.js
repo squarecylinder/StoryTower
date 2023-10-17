@@ -3,19 +3,25 @@ import { useQuery } from '@apollo/client';
 import { GET_ME } from './apolloClient';
 
 const AuthContext = createContext();
+const token = localStorage.getItem('token');
+const intialLoggedIn = !!token;
 
 const AuthProvider = ({ children }) => {
 
   // Fetch user data
-  const { data, refetch } = useQuery(GET_ME);
-
-  // Use data?.me to access user data
-  const user = data?.me;
-  const [loggedIn, setLoggedIn] = useState(!!user);
+  const { data, loading, refetch } = useQuery(GET_ME, {
+    onCompleted: () => {
+      setUser(data.me)
+    }
+  });
+  
+  const [user, setUser] = useState(data?.me)
+  const [loggedIn, setLoggedIn] = useState(intialLoggedIn);
 
   const login = (userData) => {
     // Perform login actions and update loggedIn and user
     localStorage.setItem('token', userData.token);
+    setUser(userData.user);
     refetch(); // Manually refetch to update user data
     setLoggedIn(true);
   };
@@ -23,6 +29,7 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     // Perform logout actions and update loggedIn and user
     localStorage.removeItem('token');
+    setUser(null);
     setLoggedIn(false);
   };
 

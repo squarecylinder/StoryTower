@@ -15,7 +15,7 @@ const App = ({intialLoggedIn, initialUser}) => {
 
   return (
     <Router>
-      <Header isLoggedIn={isLoggedIn} />
+      <Header/>
       <Routes>
           <Route exact path="/" element={<Home />} />
           <Route

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css'
 import SearchBar from '../SearchBar/SearchBar';
+import { AuthContext } from '../../AuthProvider';
 
-const Header = ({ isLoggedIn }) => {
+const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const { loggedIn } = useContext(AuthContext);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
@@ -98,7 +100,7 @@ const Header = ({ isLoggedIn }) => {
       <div className="placeholder-tabs">
         <Link to="/signup">SignUp</Link>
         <Link to="/login">Login</Link>
-        {isLoggedIn && <Link to="/account">Account</Link>}
+        {loggedIn && <Link to="/account">Account</Link>}
       </div>
       <div className="search-bar">
         <SearchBar />
