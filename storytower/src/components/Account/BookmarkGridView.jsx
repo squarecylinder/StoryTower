@@ -10,20 +10,19 @@ const BookmarkGridView = ({bookmarkedStories}) => {
     return <LoadingScreen />
   }
 
-  const renderStoryItem = ({ item }) => (
-    console.log(item)
-    // <div key={item._id}>
-    //   <img src={item.coverArt} alt="Cover Art" className="coverArt" />
-    //   <p className="itemText">{item.title}</p>
-    // </div>
+  const renderStoryItem = (item) => (
+    <div key={item._id}>
+      <img src={item.coverArt} alt="Cover Art" />
+      <p>{item.title}</p>
+    </div>
   );
 
-  console.log(bookmarkedStories)
+  // console.log(bookmarkedStories)
   return (
     <div>
       <h2>My Bookmarks (Grid View)</h2>
       <div>{bookmarkedStories.map((story) => (
-        <Link to={`/story/${story._id}`}>{story.coverArt}</Link>
+        <Link to={`/story/${story._id}`}>{renderStoryItem(story)}</Link>
       ))}</div>
     </div>
   );
