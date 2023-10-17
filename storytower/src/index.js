@@ -1,32 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import BrowserRouter
 import { ApolloProvider } from '@apollo/client';
 import './index.css';
-import Header from './components/Header';
-import Home from './components/Home';
-import ComicIndexPage from './components/ComicIndexPage';
-import StoryDetails from './components/StoryDetails';
-import ChapterScreen from './components/ChapterScreen';
+import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import client from './apolloClient';
+import { AuthProvider } from './AuthProvider';
+
+const token = localStorage.getItem('token');
+const intialLoggedIn = !!token;
+const storedUser = localStorage.getItem('user');
+const initialUser = storedUser ? JSON.parse(storedUser) : null;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <Router>
-      <Header />
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route
-            path="/comics/genre/:genres/:page"
-            element={<ComicIndexPage />}
-          />
-          <Route path="/story/:storyId" element={<StoryDetails />} />
-          <Route path="/chapter/:chapterId" element={<ChapterScreen />} />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <App intialLoggedIn={intialLoggedIn} initialUser={initialUser} />
+      </AuthProvider>
     </ApolloProvider>
   </React.StrictMode>
 );

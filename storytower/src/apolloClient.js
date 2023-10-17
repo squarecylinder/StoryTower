@@ -7,8 +7,30 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
     uri: graphQLURI, // Replace with the correct API endpoint for your Apollo Server
+    headers: {
+      authorization: localStorage.getItem('token') || '' // Attach token to headers
+    }
   }),
 });
+
+export const GET_ME = gql`
+query {
+  me {
+    _id
+    email
+    username
+    profilePicture
+    bookmarkedStories {
+      _id
+      title
+      coverArt
+    }
+    readChapters {
+      _id
+    }
+    token
+  }
+}`
 
 export const GET_STORY = gql`
   query getStory($id: ID!){
@@ -116,5 +138,46 @@ query getChapterDetails($chapterIds: [ID!]!) {
 }
 `;
 
+export const CREATE_USER = gql`
+mutation createUser($email: String!, $username: String!, $password: String!) {
+  createUser(email: $email, username: $username, password: $password) {
+    _id
+    email
+    username
+  }
+}
+`;
+
+export const LOGIN_USER = gql`
+mutation loginUser($identifier: String!, $password: String!) {
+  loginUser(identifier: $identifier, password: $password) {
+    _id
+    email
+    username
+    profilePicture
+    bookmarkedStories {
+      _id
+      title
+    }
+    readChapters {
+      _id
+      title
+    }
+    token
+  }
+}
+`
+
+export const UPDATE_BOOKMARK = gql`
+mutation updateBookmarkStory($storyId: ID!, $userId: ID!){
+  updateBookmarkStory(storyId: $storyId, userId: $userId){
+    _id
+    bookmarkedStories {
+      _id
+      title
+      coverArt
+    }
+  }
+}`
 
 export default client;
