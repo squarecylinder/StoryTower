@@ -11,7 +11,7 @@ const BookmarkGridView = ({bookmarkedStories}) => {
   }
 
   const renderStoryItem = (item) => (
-    <div key={item._id}>
+    <div className='bookmark-item' key={item._id}>
       <img src={item.coverArt} alt="Cover Art" />
       <p>{item.title}</p>
     </div>
@@ -21,8 +21,8 @@ const BookmarkGridView = ({bookmarkedStories}) => {
   return (
     <div>
       <h2>My Bookmarks (Grid View)</h2>
-      <div>{bookmarkedStories.map((story) => (
-        <Link to={`/story/${story._id}`}>{renderStoryItem(story)}</Link>
+      <div className='bookmark-grid'>{bookmarkedStories.map((story) => (
+        <Link className='bookmark-card' to={`/story/${story._id}`}>{renderStoryItem(story)}</Link>
       ))}</div>
     </div>
   );

@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_STORY, GET_CHAPTER_DETAILS, UPDATE_BOOKMARK, GET_ME } from '../../apolloClient';
-import  { AuthContext } from '../../AuthProvider';
+import { GET_STORY, GET_CHAPTER_DETAILS, UPDATE_BOOKMARK } from '../../apolloClient';
+import { AuthContext } from '../../AuthProvider';
 import './StoryDetails.css';
 
 const getFormattedDate = (lastUpdated) => {
@@ -13,11 +13,10 @@ const getFormattedDate = (lastUpdated) => {
     return `${monthName} ${day}, ${year}`;
 };
 
-const StoryDetails = ({ isLoggedIn}) => {
+const StoryDetails = () => {
     const { storyId } = useParams();
     const [updateBookmarkStory] = useMutation(UPDATE_BOOKMARK)
-    const { user } = useContext(AuthContext);
-    // const { loading: meLoading, error: meError, data: meData } = useQuery(GET_ME)
+    const { loggedIn, user, loading } = useContext(AuthContext);
     const { loading: storyLoading, error: storyError, data: storyData } = useQuery(GET_STORY, {
         variables: { id: storyId },
     });
@@ -29,17 +28,14 @@ const StoryDetails = ({ isLoggedIn}) => {
             setChapters(chapterData.chapters)
         }
     });
+    const [isBookmarked, setIsBookmarked] = useState(user?.bookmarkedStories.findIndex(bookmark => bookmark._id.toString() === storyId) !== -1);
 
-    if (storyLoading || chapterLoading) return <div>Loading...</div>;
+
+    if (storyLoading || chapterLoading || !user) return <div>Loading...</div>;
     if (storyError) return <div>Error: {storyError.message}</div>;
     if (chapterError) return <div>Error: {chapterError.message}</div>;
-    // if (meError) return <div>Error: {meError.message}</div>;
 
     const { story } = storyData;
-
-    const isBookmarked = user?.bookmarkedStories?.some(bookmarkedStory => {
-        return bookmarkedStory._id === story._id;
-      }) || false; // Default to false if data is not available yet
 
     const handleBookmarkClick = () => {
         updateBookmarkStory({
@@ -47,7 +43,8 @@ const StoryDetails = ({ isLoggedIn}) => {
                 storyId: story._id,
                 userId: user._id,
             },
-        });
+        })
+        setIsBookmarked(prevIsBookmarked => !prevIsBookmarked);
     };
 
     return (
@@ -61,9 +58,9 @@ const StoryDetails = ({ isLoggedIn}) => {
                     <p>Chapter Count: {story.chapterCount}</p>
                     <p>Synopsis: {story.synopsis}</p>
                     <p>Genres: {story.genres.join(', ')}</p>
-                    {isLoggedIn && (
+                    {loggedIn && !loading && (
                         <button onClick={handleBookmarkClick}>
-                            {isBookmarked ? 'Unbookmark' : 'Bookmark'}
+                            {isBookmarked  ? 'Unbookmark' : 'Bookmark'}
                         </button>
                     )}
                     {/* Render chapters */}

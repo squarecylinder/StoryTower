@@ -8,8 +8,8 @@ import BookmarkGridView from './BookmarkGridView';
 import  { AuthContext } from '../../AuthProvider';
 import './Account.css';
 
-const Account = ({isLoggedIn}) => {
-  const { user } = useContext(AuthContext);
+const Account = () => {
+  const { loggedIn, user } = useContext(AuthContext);
   const [isGridView, setIsGridView] = useState(false);
 
   const handleViewToggle = () => {
@@ -20,14 +20,14 @@ const Account = ({isLoggedIn}) => {
     return <LoadingScreen />
   }
 
-  if (!isLoggedIn) {
+  if (!loggedIn) {
     // Navigate to login page if not logged in
     return <Navigate to="/login" />;
   }
 
   return (
     <div className="account-container">
-      {/* <Profile user={user}/> */}
+      <Profile user={user}/>
       <div className="toggle-view">
         <button onClick={handleViewToggle}>
           {isGridView ? 'Switch to List View' : 'Switch to Grid View'}

@@ -6,7 +6,6 @@ const resolvers = {
   Query: {
     // Add resolver functions for queries here (e.g., users, user, stories, etc.)
     me: async (parent, args, context) => {
-      console.log(context.user)
       try {
         const user = await User.findById(context.user._id).populate('bookmarkedStories')
         return {user, token: context.user.token}

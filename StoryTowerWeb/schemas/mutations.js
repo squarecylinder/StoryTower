@@ -49,7 +49,7 @@ const loginUser = async (_, { identifier, password }) => {
     // Find the user by either email or username
     const user = await User.findOne({
       $or: [{ email: identifier }, { username: identifier }],
-    });
+    }).populate('bookmarkedStories');
 
     if (!user) {
       throw new Error('User not found');
@@ -75,15 +75,13 @@ const loginUser = async (_, { identifier, password }) => {
 }
 
 const updateBookmarkStory = async (_, { storyId, userId }) => {
-  // console.log(storyId, userId)
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate('bookmarkedStories');
     if(!user) {
       throw new Error('User not found');
     }
-    // console.log('before update' + user)
     const story = await Story.findById(storyId)
-    const storyIndex = user.bookmarkedStories.indexOf(storyId);
+    const storyIndex = user.bookmarkedStories.findIndex(bookmarks => bookmarks._id.toString() === storyId);
     if (storyIndex !== -1){
       user.bookmarkedStories.splice(storyIndex, 1);
     } else {

@@ -3,9 +3,9 @@ import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../apolloClient'; // Define your login mutation
 import { AuthContext } from '../AuthProvider'
 
-const Login = ({setIsLoggedIn, setUser}) => {
+const Login = () => {
   const [loginUser] = useMutation(LOGIN_USER);
-  const { login, loggedIn, user } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
   const [userData, setUserData] = useState({
     identifier: '',
@@ -26,14 +26,8 @@ const Login = ({setIsLoggedIn, setUser}) => {
           password: userData.password,
         },
       });
-
       if (data && data.loginUser) {
-        // setIsLoggedIn(true); 
         login(data.loginUser)
-        // setUser({...data.loginUser})
-        // Store the token in Local Storage
-        // localStorage.setItem('user', JSON.stringify(data.loginUser))
-        // localStorage.setItem('token', data.loginUser.token);
         console.log('User logged in:', data.loginUser);
       } else {
         console.error('Error logging in: No valid response received.');
