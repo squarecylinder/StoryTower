@@ -31,7 +31,7 @@ const StoryDetails = () => {
     const [isBookmarked, setIsBookmarked] = useState(user?.bookmarkedStories.findIndex(bookmark => bookmark._id.toString() === storyId) !== -1);
 
 
-    if (storyLoading || chapterLoading || !user) return <div>Loading...</div>;
+    if (storyLoading || chapterLoading) return <div>Loading...</div>;
     if (storyError) return <div>Error: {storyError.message}</div>;
     if (chapterError) return <div>Error: {chapterError.message}</div>;
 
