@@ -1,6 +1,5 @@
 // Account.js
 import React, { useContext, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import Profile from './Profile';
 import BookmarkListView from './BookmarkListView';
@@ -9,20 +8,19 @@ import  { AuthContext } from '../../AuthProvider';
 import './Account.css';
 
 const Account = () => {
-  const { loggedIn, user } = useContext(AuthContext);
+  const { loggedIn, user, loading } = useContext(AuthContext);
   const [isGridView, setIsGridView] = useState(false);
 
   const handleViewToggle = () => {
     setIsGridView(!isGridView);
   };
-
-  if(!user){
+  
+  if(loading){
     return <LoadingScreen />
   }
 
-  if (!loggedIn) {
-    // Navigate to login page if not logged in
-    return <Navigate to="/login" />;
+  if (!loggedIn && !user && !loading) {
+    return <p> User is not logged in!</p>
   }
 
   return (
@@ -33,7 +31,7 @@ const Account = () => {
           {isGridView ? 'Switch to List View' : 'Switch to Grid View'}
         </button>
       </div>
-      {isGridView ? <BookmarkGridView bookmarkedStories={user.bookmarkedStories}/> : <BookmarkListView bookmarkedStories={user.bookmarkedStories} />}
+      {isGridView ? <BookmarkGridView bookmarkedStories={user?.bookmarkedStories}/> : <BookmarkListView bookmarkedStories={user?.bookmarkedStories} />}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_STORY, GET_CHAPTER_DETAILS, UPDATE_BOOKMARK } from '../../apolloClient';
 import { AuthContext } from '../../AuthProvider';
