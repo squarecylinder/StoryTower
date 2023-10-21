@@ -7,17 +7,12 @@ import reportWebVitals from './reportWebVitals';
 import client from './apolloClient';
 import { AuthProvider } from './AuthProvider';
 
-const token = localStorage.getItem('token');
-const intialLoggedIn = !!token;
-const storedUser = localStorage.getItem('user');
-const initialUser = storedUser ? JSON.parse(storedUser) : null;
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <AuthProvider>
-        <App intialLoggedIn={intialLoggedIn} initialUser={initialUser} />
+        <App />
       </AuthProvider>
     </ApolloProvider>
   </React.StrictMode>

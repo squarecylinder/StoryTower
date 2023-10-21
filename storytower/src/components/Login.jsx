@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState} from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../apolloClient'; // Define your login mutation
 import { AuthContext } from '../AuthProvider'
 
 const Login = () => {
-  const [loginUser] = useMutation(LOGIN_USER);
-  const { login } = useContext(AuthContext);
+  const { login, loggedIn } = useContext(AuthContext);
+  const [loginUser, { error }] = useMutation(LOGIN_USER);
 
   const [userData, setUserData] = useState({
     identifier: '',
@@ -28,7 +28,7 @@ const Login = () => {
       });
       if (data && data.loginUser) {
         login(data.loginUser)
-        console.log('User logged in:', data.loginUser);
+        window.location.replace('/Account')
       } else {
         console.error('Error logging in: No valid response received.');
       }
@@ -56,6 +56,14 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      {error && (
+        <div>
+          <p>{error.message}</p>
+        </div>
+      )}
+      {loggedIn && (
+        <p>User logged in!</p>
+      )}
     </div>
   );
 };

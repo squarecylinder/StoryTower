@@ -6,10 +6,14 @@ import { AuthContext } from '../../AuthProvider';
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const { loggedIn } = useContext(AuthContext);
+  const { loggedIn, logout } = useContext(AuthContext);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
+  }
+
+  const handleLogOut = () => {
+    logout()
   }
 
   const genres = [
@@ -101,6 +105,7 @@ const Header = () => {
         <Link to="/signup">SignUp</Link>
         <Link to="/login">Login</Link>
         {loggedIn && <Link to="/account">Account</Link>}
+        {loggedIn && <Link onClick={handleLogOut}>Log Out</Link>}
       </div>
       <div className="search-bar">
         <SearchBar />

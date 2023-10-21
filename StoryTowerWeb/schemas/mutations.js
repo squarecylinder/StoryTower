@@ -38,7 +38,7 @@ const createUser = async (_, { email, username, password }) => {
     }
     const user = new User({ email, username, password});
     await user.save();
-    return user;
+    return {user};
   } catch (error) {
     throw new Error('Error creating user: ' + error.message);
   }
