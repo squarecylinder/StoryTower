@@ -77,8 +77,8 @@ const StoryDetails = () => {
                                     </Link>
                                 </div>
                                 {chapters.map((chapter, index) => (
-                                    <Link to={`/chapter/${chapter._id}`}>
-                                        <div key={index} className='chapter-card'>
+                                    <Link key={index} to={`/chapter/${chapter._id}`}>
+                                        <div className='chapter-card'>
                                             {chapter.title} {getFormattedDate(chapter.uploaded)}
                                         </div>
                                     </Link>
