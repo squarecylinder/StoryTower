@@ -4,7 +4,7 @@ import { CREATE_USER, LOGIN_USER } from '../apolloClient';
 import { AuthContext } from '../AuthProvider'
 
 const SignUp = () => {
-  const { login, loggedIn } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const [loginUser] = useMutation(LOGIN_USER);
   const [createUser, { error }] = useMutation(CREATE_USER);
 
@@ -31,7 +31,6 @@ const SignUp = () => {
       });
 
       if (data && data.createUser) {
-        console.log('User created:', data.createUser);
         try {
           const { data } = await loginUser({
             variables: {
@@ -40,7 +39,6 @@ const SignUp = () => {
             },
           });
           if (data){
-            console.log(data)
             login(data.loginUser)
             window.location.replace('/comics/genre/All/1')
           }
@@ -79,7 +77,6 @@ const SignUp = () => {
           value={userData.password}
           onChange={handleChange}
         />
-        {/* <button onClick={handleSignUp}>Sign Up</button> */}
         <button type='submit'>Sign up</button>
       </form>
       {error && (
