@@ -2,7 +2,7 @@
 
 ## Overview
 
-StoryTower is a React Native mobile application with a backend that leverages web scraping to build and maintain a catalog of manhwa (Korean comics) from various websites. The application utilizes GraphQL, Apollo Server, and MongoDB technologies to provide a seamless and efficient user experience.
+StoryTower is a React application with a backend that leverages web scraping to build and maintain a catalog of manhwa (Korean comics) from various websites. The application utilizes GraphQL, Apollo Server, and MongoDB technologies to provide a seamless and efficient user experience.
 
 ## Features
 
@@ -13,7 +13,6 @@ StoryTower is a React Native mobile application with a backend that leverages we
 
 ## Technologies Used
 
-- React Native: A JavaScript framework for building cross-platform mobile apps.
 - GraphQL: A query language for APIs that enables clients to request exactly the data they need.
 - Apollo Server: A GraphQL server that connects to the React Native front-end.
 - MongoDB: A NoSQL database to store and retrieve manhwa data.
@@ -33,7 +32,7 @@ StoryTower is a React Native mobile application with a backend that leverages we
 
 ## Usage
 
-1. Launch the StoryTower mobile application on your device or emulator.
+1. Launch the StoryTower application.
 2. Browse the manhwa catalog, search for titles, and read your favorite manhwa chapters.
 3. Save manhwa to your personal collection for easy access.
 
