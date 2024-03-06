@@ -96,9 +96,12 @@ const ChapterScreen = () => {
                 <button disabled={isPreviousDisabled} onClick={goToPreviousChapter}>Previous Chapter</button>
                 <button disabled={isNextDisabled} onClick={goToNextChapter}>Next Chapter</button>
               </div>
-              {updatedImages.map((image, index) => (
+              {updatedImages.map((image, index) => {
+                if(image.includes("asura")){
                 <img key={index} src={image} alt={`Chapter Page ${index + 1}`} />
-              ))}
+                }
+              }
+              )}
               <div className="chapter-navigation">
                 <button disabled={isPreviousDisabled} onClick={goToPreviousChapter}>Previous Chapter</button>
                 <button disabled={isNextDisabled} onClick={goToNextChapter}>Next Chapter</button>
