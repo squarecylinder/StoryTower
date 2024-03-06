@@ -44,7 +44,7 @@ async function performAsuraChapterScraping() {
           const coverArtSrc = await coverArtElement.evaluate((el) => el.src);
 
           const synopsisElement = await page.$('.entry-content');
-          const synopsisText = await synopsisElement.evaluate((el) => el.textContent.trim());
+          const synopsisText = await synopsisElement.evaluate((el) => el.textContent.split('Ads by')[0].split("iframe")[0].trim());
 
           const genreElement = await page.$('.mgen');
           let genres = []; // Initialize genres as an empty array
