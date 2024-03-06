@@ -160,7 +160,11 @@ async function performAsuraChapterScraping() {
           const imageElements = await chapterContentElement.$$('img');
           const imageUrls = await Promise.all(
             imageElements.map(async (element) => {
-              const imageUrl = await element.evaluate((el) => el.src);
+              const imageUrl = await element.evaluate((el) => {
+              if(el.src.includes("asura")){
+                el.src
+              }
+            });
               return imageUrl;
             })
           );
