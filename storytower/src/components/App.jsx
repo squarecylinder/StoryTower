@@ -4,6 +4,7 @@ import Header from './Header/Header';
 import Home from './Home';
 import SignUp from './SignUp';
 import Login from './Login';
+import Results from './Results'
 import ComicIndexPage from './ComicIndexPage/ComicIndexPage';
 import StoryDetails from './StoryDetails/StoryDetails';
 import ChapterScreen from './ChapterScreen/ChapterScreen';
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login/>} />
           <Route path='/account' element={<Account/>} />
+          <Route path='/results/:search' element={<Results/>} />
         </Routes>
     </Router>
   );
