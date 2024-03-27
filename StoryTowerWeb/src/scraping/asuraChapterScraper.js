@@ -91,10 +91,6 @@ async function performAsuraChapterScraping() {
                 await scrapeChapterData(page, existingStory, firstChapterURL);
               } else {
                 const chapterCount = existingStory.chapters.length;
-                const lastChapterNumberOnSite = await page.evaluate(() => {
-                  const chapterTitleElement = document.querySelector('.chapternum');
-                  return parseInt(chapterTitleElement.textContent.match(/Chapter (\d+)/)[1], 10);
-                });
                 console.log(`${existingStory.title}: Total chapters on site ${totalChapters}, Total chapters in DB ${chapterCount}`)
                 const chapterDifference = totalChapters - chapterCount;
                 if (chapterDifference !== 0) {
@@ -104,7 +100,7 @@ async function performAsuraChapterScraping() {
                   try {
                     await scrapeChapterData(page, existingStory, chapterURL);
                   } catch (error) {
-                    console.error(`Error while scraping chapter ${chapterTitle} for ${story.name}:`, error);
+                    console.error(`Error while scraping chapter ${chapterURL} for ${story.name}:`, error);
                   }
                 }
               }
@@ -155,41 +151,36 @@ async function performAsuraChapterScraping() {
           const chapterTitleElement = await page.$('.entry-title');
           let chapterTitle = await chapterTitleElement.evaluate((el) => el.innerText.trim());
 
-          // Extract the chapter number from the selected option value (if needed)
-          // Step 2: Extract the image URLs
-          const imageElements = await chapterContentElement.$$('img');
-          const imageUrls = await Promise.all(
-            imageElements.map(async (element) => {
-              const imageUrl = await element.evaluate((el) => {
-              if(el.src.includes("asura")){
-                el.src
-              }
+          let chapterExists = await Chapter.findOne({ title: chapterTitle })
+          if (!chapterExists) {
+            // Extract the chapter number from the selected option value (if needed)
+            // Step 2: Extract the image URLs
+            const imageElements = await chapterContentElement.$$('img');
+            const imageUrls = await Promise.all(
+              imageElements.map(async (element) => {
+                const imageUrl = await element.evaluate((el) => {
+                  // if(el.src.includes("asura")){
+                  return el.src
+                  // }
+                });
+                return imageUrl;
+              })
+            );
+
+            // Step 3: Save the images to the database
+            const newChapter = new Chapter({
+              title: chapterTitle, // Use the extracted chapter title
+              images: imageUrls, // Save the image URLs as an array of strings
+              story: existingStory._id,
+              uploaded: new Date()
             });
-              return imageUrl;
-            })
-          );
 
-          // Step 3: Save the images to the database
-          const newChapter = new Chapter({
-            title: chapterTitle, // Use the extracted chapter title
-            images: imageUrls, // Save the image URLs as an array of strings
-            story: existingStory._id,
-            uploaded: new Date()
-          });
-
-          await newChapter.save();
-          // Step 4: Associate the chapter with the story
-          existingStory.chapters.push(newChapter);
-          existingStory.lastUpdated = new Date();
-          await existingStory.save();
-          console.log(`Saved ${chapterTitle} to ${existingStory.title}.`)
-
-          try {
-            // Click the "Next" button to navigate to the next chapter page
-            await page.goto(chapterURL); // Re-visit the chapter page URL to navigate to the next chapter
-          } catch (error) {
-            console.error(`Error while navigating to the next chapter page for ${existingStory.title}`, error);
-            break; // Exit the loop if there's an error in navigation
+            await newChapter.save();
+            // Step 4: Associate the chapter with the story
+            existingStory.chapters.push(newChapter);
+            existingStory.lastUpdated = new Date();
+            await existingStory.save();
+            console.log(`Saved ${chapterTitle} to ${existingStory.title}.`)
           }
           // Check if the "Next" button is disabled (indicating no more chapters)
           const nextButton = await page.$('.ch-next-btn');
@@ -201,11 +192,11 @@ async function performAsuraChapterScraping() {
             chapterURL = await page.evaluate(el => el.href, nextButton);
           }
         } catch (error) {
-          console.error(`Error while scraping chapter for ${existingStory.title}`, error);
+          console.error(`Error while scraping ${chapterURL} chapter for ${existingStory.title}`, error);
         }
       }
     } catch (error) {
-      console.error('Error while scraping chapters:', error);
+      console.error(`Error while scraping ${chapterURL} chapters:`, error);
     }
   }
   try {
