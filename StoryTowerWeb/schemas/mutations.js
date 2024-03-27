@@ -17,9 +17,6 @@ const addScrapedDataToCatalog = async ({ scrapedData }) => {
           link: data.link,
           provider: data.provider,
         });
-      } else {
-        // Document already exists, skip saving
-        console.log(`Data with link: ${data.link} and provider: ${data.provider} already exists.`);
       }
     }
 

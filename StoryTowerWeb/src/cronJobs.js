@@ -24,4 +24,5 @@ async function cronJob(){
 // }
 // );
 }
-cronJob();
+
+module.exports = cronJob
