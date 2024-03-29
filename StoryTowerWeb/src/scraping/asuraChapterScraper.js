@@ -34,6 +34,7 @@ async function performAsuraChapterScraping() {
         if (story.name != "(AD) Everyone Regressed Except Me"
           && !story.name.includes('discord')
           && !story.link.includes('.gg')
+          && story.name != "Nano Machine"
         ) {
           await page.goto(story.link);
           console.log(story.link)
@@ -150,7 +151,7 @@ async function performAsuraChapterScraping() {
           const chapterContentElement = await page.$('#readerarea');
           const chapterTitleElement = await page.$('.entry-title');
           let chapterTitle = await chapterTitleElement.evaluate((el) => el.innerText.trim());
-
+          console.log(chapterURL)
           let chapterExists = await Chapter.findOne({ title: chapterTitle })
           if (!chapterExists) {
             // Extract the chapter number from the selected option value (if needed)
@@ -185,6 +186,7 @@ async function performAsuraChapterScraping() {
           // Check if the "Next" button is disabled (indicating no more chapters)
           const nextButton = await page.$('.ch-next-btn');
           const isNextButtonDisabled = await nextButton.evaluate((btn) => btn.classList.contains('disabled'));
+          console.log(isNextButtonDisabled)
           if (isNextButtonDisabled) {
             console.log(`No more chapters to scrape for ${existingStory.title}`);
             break;

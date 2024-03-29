@@ -20,7 +20,7 @@ const Results = () =>{
         <div className="pt-6">
             {
             hasResults ? (
-                <div className="grid gap-2 grid-cols-8">
+                <div className="columns-3xs">
                     {stories.map((item) => 
                         <Link to={`/story/${item._id}`} state={{ story: item }} key={item._id}>
                         <div className="bg-cyan-700 p-4">

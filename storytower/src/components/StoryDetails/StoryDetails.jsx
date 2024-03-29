@@ -51,8 +51,8 @@ const StoryDetails = () => {
         <div className="story-details">
             {story && (
                 <div>
-                    <h2>{story.title}</h2>
-                    <img src={story.coverArt} alt="Cover Art" className="cover-art" />
+                    <img src={story.coverArt} alt="Cover Art" className="cover-art p-3" />
+                    <h1 className='text-xl'>{story.title}</h1>
                     <p>Rating: {story.rating}</p>
                     <p>Last Updated: {getFormattedDate(story.lastUpdated)}</p>
                     <p>Chapter Count: {story.chapterCount}</p>
@@ -60,13 +60,12 @@ const StoryDetails = () => {
                     <p>Genres: {story.genres.join(', ')}</p>
                     {loggedIn && !loading && (
                         <button onClick={handleBookmarkClick}>
-                            {isBookmarked  ? 'Unbookmark' : 'Bookmark'}
+                            {isBookmarked ? 'Unbookmark' : 'Bookmark'}
                         </button>
                     )}
                     {/* Render chapters */}
                     {chapters.length > 0 && (
                         <div>
-                            <h3>Chapter Titles</h3>
                             <div className="chapter-cards">
                                 <div className="chapter-links">
                                     <Link to={`/chapter/${chapters[0]._id}`} className="chapter-card">
@@ -76,13 +75,19 @@ const StoryDetails = () => {
                                         Latest Chapter
                                     </Link>
                                 </div>
-                                {chapters.map((chapter, index) => (
-                                    <Link key={index} to={`/chapter/${chapter._id}`}>
-                                        <div className='chapter-card'>
-                                            {chapter.title} {getFormattedDate(chapter.uploaded)}
-                                        </div>
-                                    </Link>
-                                ))}
+                                <div className='max-h-80 overflow-auto'>
+                                    <ul className='size-full'>
+                                        {chapters.map((chapter, index) => (
+                                            <li>
+                                                <Link key={index} to={`/chapter/${chapter._id}`}>
+                                                    <div className='chapter-card'>
+                                                        {chapter.title} {getFormattedDate(chapter.uploaded)}
+                                                    </div>
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     )}

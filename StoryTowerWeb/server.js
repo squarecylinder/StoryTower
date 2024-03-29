@@ -102,7 +102,7 @@ const startApolloServer = async () => {
         }
       }
 
-      cronJob()
+      // cronJob()
 
       app.listen(PORT, () => {
         console.log(`API Server running at http://${process.env.SERVER_IP}:${PORT}${server.graphqlPath}`);
