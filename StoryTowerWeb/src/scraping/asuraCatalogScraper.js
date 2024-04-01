@@ -14,7 +14,7 @@ async function performAsuraCatalogScraping() {
     const manwhaData = [];
 
     manwhaContent.forEach((link) => {
-      if(!link.textContent.includes('Discord')){
+      if(!link.textContent.includes('Discord') && !link.textContent.includes('69420')){
         const series = {
           name: link.textContent,
           link: link.href,

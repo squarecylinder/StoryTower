@@ -35,6 +35,7 @@ async function performAsuraChapterScraping() {
           && !story.name.includes('discord')
           && !story.link.includes('.gg')
           && story.name != "Nano Machine"
+          && story.name != "The Greatest Sword Hero Returns After 69420 Years"
         ) {
           await page.goto(story.link);
           console.log(story.link)
