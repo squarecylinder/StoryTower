@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 import _debounce from 'lodash.debounce'; // Import debounce from lodash
-import { SEARCH_STORIES_BY_TITLE } from '../../apolloClient'; // Import your query
-import './SearchBar.css'
+import { SEARCH_STORIES_BY_TITLE } from '../apolloClient'; // Import your query
+// import './SearchBar.css'
 
 const SearchBar = () => {
     const navigate = useNavigate();
@@ -32,23 +32,23 @@ const SearchBar = () => {
     };
 
     return (
-        <form onSubmit={e => e.preventDefault()} className='rounded-md border-2 border-blue-gray-600 bg-white'>
+        <form onSubmit={e => e.preventDefault()} className='rounded-r-lg border-2 border-blue-gray-600 bg-white'>
             <input
-                className='text-black outline-none'
+                className='text-black outline-none rounded-l-md'
                 type="text"
-                placeholder="Search for a story..."
+                placeholder=" Search for a story..."
                 value={searchTerm}
                 onChange={handleChange}
             />
-            <button className='rounded-md border-2 border-blue-gray-700 bg-blue-gray-500  hover:bg-blue-gray-400 hover:text-blue-gray-900 px-4 py-2 text-blue-gray-100 shadow-md' onClick={handleSearch}>Search</button>
+            <button className='rounded-r-md  border-2 border-blue-gray-700 bg-blue-gray-500  hover:bg-blue-gray-400 hover:text-blue-gray-900 px-2 text-blue-gray-100 shadow-md' onClick={handleSearch}>Search</button>
             {searchTerm && data && data.searchStoriesByTitle && (
-                <div className="suggestions">
+                <div className="rounded-b-md border-2 w-60 h-48 overflow-auto absolute bg-blue-gray-500 text-blue-gray-100">
                     {data.searchStoriesByTitle.map((suggestion) => (
                         <Link
                             to={`/story/${suggestion._id}`}
                             state={{ story: suggestion }}
                             key={suggestion._id}
-                            className="suggestion-item"
+                            className="break-words p-1 block hover:bg-blue-gray-700 hover:text-blue-gray-950"
                         >
                             {suggestion.title.split(new RegExp(`(${searchTerm})`, 'gi')).map((part, index) => (
                                 part.toLowerCase() === searchTerm.toLowerCase() ?
