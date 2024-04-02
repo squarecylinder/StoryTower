@@ -26,26 +26,21 @@ const SearchBar = () => {
     };
 
     const handleSearch = () => {
-        // Handle the search logic, e.g., navigate to the appropriate page
-        // In this example, we're just navigating to the first story if available
         if (data?.searchStoriesByTitle?.length > 0) {
-            // navigate(`/story/${data.searchStoriesByTitle[0]._id}`);
             navigate(`/results/${searchTerm}`, {state: {stories: data.searchStoriesByTitle}});
         }
     };
 
     return (
-        <div className="search-bar" >
+        <form onSubmit={e => e.preventDefault()} className='rounded-md border-2 border-blue-gray-600 bg-white'>
             <input
-                className='text-black'
+                className='text-black outline-none'
                 type="text"
                 placeholder="Search for a story..."
                 value={searchTerm}
                 onChange={handleChange}
             />
-            <button 
-                onClick={handleSearch}
-            >Search</button>
+            <button className='rounded-md border-2 border-blue-gray-700 bg-blue-gray-500  hover:bg-blue-gray-400 hover:text-blue-gray-900 px-4 py-2 text-blue-gray-100 shadow-md' onClick={handleSearch}>Search</button>
             {searchTerm && data && data.searchStoriesByTitle && (
                 <div className="suggestions">
                     {data.searchStoriesByTitle.map((suggestion) => (
@@ -64,7 +59,7 @@ const SearchBar = () => {
                     ))}
                 </div>
             )}
-        </div>
+        </form>
     );
 };
 

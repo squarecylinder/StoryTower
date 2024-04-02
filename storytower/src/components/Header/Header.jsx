@@ -81,34 +81,26 @@ const Header = () => {
   ];
 
   return (
-    <div className="header">
-      <div className="logo">
-        <Link to="/comics/genre/All/1">Home</Link>
-      </div>
-      <div className='dropdown'>
-        <div className='dropdown-button' onClick={toggleDropdown}>
+    <header className="bg-blue-gray-950 h-16 p-2 justify-center mb-10 flex flex-colum flex-no-wrap gap-12">
+        <Link className="text-white text-xl" to="/comics/genre/All/1">Home</Link>
+        <button className='dropdown-buttonOLD text-white text-xl' onClick={toggleDropdown}>
           Genres
-        </div>
+        </button>
         {isDropdownOpen && (
-          <div className='dropdown-content'> 
+          <div className='dropdown-contentOLD bg-blue-gray-950 w-96 divide-y-2 divide-blue-gray-200 z-40 flex flex-row flex-wrap'> 
           {genres.map((genre) => (
-            <Link key={genre} to={`/comics/genre/${genre}/1`}>
+            <Link className='text-white text-sm p-2 bg-blue-gray-950' key={genre} to={`/comics/genre/${genre}/1`}>
               {genre}
             </Link>
           ))}
           </div>
         )}
-      </div>
-      <div className="placeholder-tabs">
-        <Link to="/signup">SignUp</Link>
-        <Link to="/login">Login</Link>
-        {loggedIn && <Link to="/account">Account</Link>}
-        {loggedIn && <Link onClick={handleLogOut}>Log Out</Link>}
-      </div>
-      <div className="search-bar">
+        <Link className="text-white text-xl"  to="/signup">SignUp</Link>
+        <Link className="text-white text-xl"  to="/login">Login</Link>
+        {loggedIn && <Link className="text-white text-xl"  to="/account">Account</Link>}
+        {loggedIn && <Link className="text-white text-xl"  onClick={handleLogOut}>Log Out</Link>}
         <SearchBar />
-      </div>
-    </div>
+    </header>
   );
 };
 

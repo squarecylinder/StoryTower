@@ -10,20 +10,20 @@ const Results = () =>{
     const hasResults = stories.length > 0 ? true : false
 
     const renderStoryItem = ({ item }) => (
-        <div className="max-w-48" key={item._id}>
-          <img className=" max-h-54" src={item.coverArt} alt="Cover Art"/>
+        <div key={item._id}>
+          <img className="aspect-square h-96" src={item.coverArt} alt="Cover Art"/>
           <p>{item.title}</p>
         </div>
       );
 
     return (
-        <div className="pt-6">
+        <div className="p-6">
             {
             hasResults ? (
-                <div className="columns-3xs">
+                <div className="p-2 flex flex-wrap flex-row gap-2 justify-center items-center h-fit">
                     {stories.map((item) => 
                         <Link to={`/story/${item._id}`} state={{ story: item }} key={item._id}>
-                        <div className="bg-cyan-700 p-4">
+                        <div className="bg-cyan-700 p-2">
                             {renderStoryItem({ item })}
                             </div>
                         </Link>
