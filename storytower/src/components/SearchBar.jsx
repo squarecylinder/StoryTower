@@ -32,7 +32,7 @@ const SearchBar = () => {
     };
 
     return (
-        <form onSubmit={e => e.preventDefault()} className='rounded-r-lg border-2 border-blue-gray-600 bg-white'>
+        <form onSubmit={e => e.preventDefault()} className='rounded-r-lg border-2 border-primary-600 bg-white'>
             <input
                 className='text-black outline-none rounded-l-md'
                 type="text"
@@ -40,15 +40,15 @@ const SearchBar = () => {
                 value={searchTerm}
                 onChange={handleChange}
             />
-            <button className='rounded-r-md  border-2 border-blue-gray-700 bg-blue-gray-500  hover:bg-blue-gray-400 hover:text-blue-gray-900 px-2 text-blue-gray-100 shadow-md' onClick={handleSearch}>Search</button>
+            <button className='rounded-r-md  border-2 border-primary-700 bg-primary-500  hover:bg-primary-400 hover:text-primary-900 px-2 text-primary-100 shadow-md' onClick={handleSearch}>Search</button>
             {searchTerm && data && data.searchStoriesByTitle && (
-                <div className="rounded-b-md border-2 w-60 h-48 overflow-auto absolute bg-blue-gray-500 text-blue-gray-100">
+                <div className="rounded-b-md border-2 w-60 h-48 overflow-auto absolute bg-primary-500 text-primary-100">
                     {data.searchStoriesByTitle.map((suggestion) => (
                         <Link
                             to={`/story/${suggestion._id}`}
                             state={{ story: suggestion }}
                             key={suggestion._id}
-                            className="break-words p-1 block hover:bg-blue-gray-700 hover:text-blue-gray-950"
+                            className="break-words p-1 block hover:bg-primary-700 hover:text-primary-950"
                         >
                             {suggestion.title.split(new RegExp(`(${searchTerm})`, 'gi')).map((part, index) => (
                                 part.toLowerCase() === searchTerm.toLowerCase() ?

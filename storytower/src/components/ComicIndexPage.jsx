@@ -48,7 +48,7 @@ const ComicIndexPage = () => {
           <div className="paginationContainerOLD p-2 space-x-1">
             <Link to={`/comics/genre/${genres}/${Math.max(page - 1, 1)}`}>
               <button
-                className='rounded-md border-2 border-blue-gray-700 bg-blue-gray-500  hover:bg-blue-gray-400 hover:text-blue-gray-900 px-4 py-2 text-blue-gray-100 shadow-md'
+                className='rounded-md border-2 border-primary-700 bg-primary-500  hover:bg-primary-400 hover:text-primary-900 px-4 py-2 text-primary-100 shadow-md'
                 disabled={loading || parseInt(page) === 1}
               >
                 Previous
@@ -62,7 +62,7 @@ const ComicIndexPage = () => {
               `}
             >
               <button
-                className='rounded-md border-2 border-blue-gray-700 bg-blue-gray-500  hover:bg-blue-gray-400 hover:text-blue-gray-900 px-4 py-2 text-blue-gray-100 shadow-md'
+                className='rounded-md border-2 border-primary-700 bg-primary-500  hover:bg-primary-400 hover:text-primary-900 px-4 py-2 text-primary-100 shadow-md'
                 disabled={loading || parseInt(page) === totalStories / limit}
               >
                 Next

@@ -80,15 +80,15 @@ const Header = () => {
   ];
 
   return (
-    <header className="text-white text-lg bg-blue-gray-950 h-20 p-6 justify-center mb-10 flex flex-row flex-wrap gap-12">
+    <header className="text-white text-lg bg-primary-950 p-6 justify-center mb-10 flex flex-row flex-wrap gap-12">
         <Link to="/">Home</Link>
         <div onClick={toggleDropdown}>
           Genres
         </div>
         {isDropdownOpen && (
-          <div className='bg-blue-gray-950 w-96 divide-y-2 divide-blue-gray-200 z-40 flex flex-row flex-wrap absolute'> 
+          <div className='bg-primary-950 w-96 divide-y-2 divide-primary-200 z-40 flex flex-row flex-wrap absolute'> 
           {genres.map((genre) => (
-            <Link className='text-white text-sm p-2 relative bg-blue-gray-950' key={genre} to={`/comics/genre/${genre}/1`}>
+            <Link className='text-white text-sm p-2 relative bg-primary-950' key={genre} to={`/comics/genre/${genre}/1`}>
               {genre}
             </Link>
           ))}
