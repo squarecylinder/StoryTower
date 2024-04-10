@@ -1,5 +1,19 @@
 // chapterScraping.js
-const puppeteer = require('puppeteer-core');
+// puppeteer-extra is a drop-in replacement for puppeteer,
+// it augments the installed puppeteer with plugin functionality
+const puppeteer = require('puppeteer-extra')
+
+// Add adblocker plugin, which will transparently block ads in all pages you
+// create using puppeteer.
+const { DEFAULT_INTERCEPT_RESOLUTION_PRIORITY } = require('puppeteer')
+const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
+puppeteer.use(
+  AdblockerPlugin({
+    // Optionally enable Cooperative Mode for several request interceptors
+    interceptResolutionPriority: DEFAULT_INTERCEPT_RESOLUTION_PRIORITY
+  })
+)
+
 const { executablePath } = require('./executablePath')
 const { Story, StoryCatalog, Chapter } = require('../../models');
 
@@ -25,7 +39,7 @@ async function performAsuraChapterScraping() {
 
   // Function to fetch the chapter links and images from a given story link
   async function getStoryInformation(storyCatalogArray) {
-    const browser = await puppeteer.launch({ executablePath: executablePath });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     try {
@@ -46,7 +60,7 @@ async function performAsuraChapterScraping() {
           const coverArtSrc = await coverArtElement.evaluate((el) => el.src);
 
           const synopsisElement = await page.$('.entry-content');
-          const synopsisText = await synopsisElement.evaluate((el) => el.textContent.split('Ads by')[0].split("iframe")[0].trim());
+          const synopsisText = await synopsisElement.evaluate((el) => el.textContent.split('var ')[0].split('Ads by')[0].split("iframe")[0].trim());
 
           const genreElement = await page.$('.mgen');
           let genres = []; // Initialize genres as an empty array
