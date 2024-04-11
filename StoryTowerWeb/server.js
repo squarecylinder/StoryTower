@@ -7,6 +7,7 @@ const Chapter = require('./models/Chapter')
 const aggregationPipelineFindDuplicateChapters = require('./src/aggregationPipelineFindDuplicateChapters')
 const aggregationPipelineFindNullChapters = require('./src/aggregationPipelineFindNullChapters')
 const aggregationPipelineFindShadowChapters = require('./src/aggregationPipelineFindShadowChapters')
+const aggregationPipelineFindOrphanedStories = require('./src/aggregationPipelineFindOrphanedStories')
 
 const cronJob = require('./src/cronJobs');
 
@@ -100,6 +101,15 @@ const startApolloServer = async () => {
               await story.save();
             }
         }
+      }
+      
+      const orphanedChapters = await Chapter.aggregate(aggregationPipelineFindOrphanedStories)
+      if (orphanedChapters.length > 0){
+        console.log('Found orphaned chapters!')
+        const idsToDelete = orphanedChapters.map(chapters => chapters._id)
+        const deletionResult = await Chapter.deleteMany({ _id: { $in: idsToDelete} });
+
+        console.log(`Deleted ${deletionResult.deletedCount} chapters.`)
       }
 
       cronJob()
