@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Header.css'
-import SearchBar from '../SearchBar/SearchBar';
-import { AuthContext } from '../../AuthProvider';
+import SearchBar from './SearchBar';
+import { AuthContext } from '../AuthProvider';
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -81,34 +80,26 @@ const Header = () => {
   ];
 
   return (
-    <div className="header">
-      <div className="logo">
-        <Link to="/comics/genre/All/1">Home</Link>
-      </div>
-      <div className='dropdown'>
-        <div className='dropdown-button' onClick={toggleDropdown}>
+    <header className="text-white text-lg bg-primary-950 p-6 justify-center mb-10 flex flex-row flex-wrap gap-12">
+        <Link to="/">Home</Link>
+        <div onClick={toggleDropdown}>
           Genres
         </div>
         {isDropdownOpen && (
-          <div className='dropdown-content'> 
+          <div className='bg-primary-950 w-96 divide-y-2 divide-primary-200 z-40 flex flex-row flex-wrap absolute'> 
           {genres.map((genre) => (
-            <Link key={genre} to={`/comics/genre/${genre}/1`}>
+            <Link className='text-white text-sm p-2 relative bg-primary-950' key={genre} to={`/comics/genre/${genre}/1`}>
               {genre}
             </Link>
           ))}
           </div>
         )}
-      </div>
-      <div className="placeholder-tabs">
-        <Link to="/signup">SignUp</Link>
+        <Link to="/signup">Sign up</Link>
         <Link to="/login">Login</Link>
         {loggedIn && <Link to="/account">Account</Link>}
         {loggedIn && <Link onClick={handleLogOut}>Log Out</Link>}
-      </div>
-      <div className="search-bar">
         <SearchBar />
-      </div>
-    </div>
+    </header>
   );
 };
 
