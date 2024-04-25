@@ -39,13 +39,13 @@ const ComicIndexPage = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="contentContainer">
+    <div className="">
       {loading ? (
         <LoadingScreen />
       ) : (
         <>
           <RenderStoryItem stories={formattedData} />
-          <div className="paginationContainerOLD p-2 space-x-1">
+          <div className="p-2 space-x-1">
             <Link to={`/comics/genre/${genres}/${Math.max(page - 1, 1)}`}>
               <button
                 className='rounded-md border-2 border-primary-700 bg-primary-500  hover:bg-primary-400 hover:text-primary-900 px-4 py-2 text-primary-100 shadow-md'

@@ -13,7 +13,7 @@ const RenderStoryItem = ({stories}) => {
   );
 
   return (
-    <div className="p-2 flex flex-wrap flex-row gap-2 justify-center items-center h-fit">
+    <div className="columns-2 md:flex flex-wrap justify-center">
       {stories.map((item) => (
         <Link to={`/story/${item._id}`} state={{ story: item }} key={item._id}>
           <div className="bg-primary-700 p-2 max-w-64 block break-words text-primary-100">
