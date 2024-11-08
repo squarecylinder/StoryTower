@@ -9,7 +9,7 @@ const { addScrapedDataToCatalog } = require("../schemas/mutations"); // Import t
 console.log("Cron job is scheduled to run every 12AM/PM.");
 // Set up the cron job to run every 12 hours
 async function cronJob() {
-  cron.schedule("0 */12 * * *", async () => {
+//   cron.schedule("0 */12 * * *", async () => {
     console.log("Starting cron job...");
     try {
       const asuraScrapingData = await performAsuraCatalogScraping();
@@ -30,7 +30,7 @@ async function cronJob() {
     } finally {
       console.log("Completed cron job!");
     }
-  });
+//   });
 }
 
 module.exports = cronJob;

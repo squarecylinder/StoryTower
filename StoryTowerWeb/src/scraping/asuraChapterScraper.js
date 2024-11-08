@@ -17,13 +17,12 @@ puppeteer.use(
 const { Story, StoryCatalog, Chapter } = require("../../models");
 
 async function performAsuraChapterScraping() {
+  console.time("Full Scrape Time")
   // Fetch only the links from the StoryCatalog collection
   const getStoryCatalogInformation = async () => {
     try {
       // Use find() with the select() method to retrieve 'name', 'link', and 'provider' fields
-      const storyCatalogInfo = await StoryCatalog.find(
-        {name: "Death Is the Only Ending for the Villainess"}
-      ).select("name link provider");
+      const storyCatalogInfo = await StoryCatalog.find().select("name link provider");
 
       // Extract the necessary fields from the result and return them as an array
       const storyCatalogArray = storyCatalogInfo.map((catalog) => ({
@@ -44,7 +43,6 @@ async function performAsuraChapterScraping() {
     const page = await browser.newPage();
     try {
       for (const story of storyCatalogArray) {
-        const existingStory = await Story.findOne({ title: story.name });
         if (
           story.name != "(AD) Everyone Regressed Except Me" &&
           !story.name.includes("discord") &&
@@ -52,6 +50,7 @@ async function performAsuraChapterScraping() {
           story.name != "Nano Machine" &&
           story.name != "The Greatest Sword Hero Returns After 69420 Years"
         ) {
+          const existingStory = await Story.findOne({ title: story.name });
           await page.goto(story.link);
           // Wait for the element to appear on the page (use the appropriate selector)
           await page.waitForSelector(".epcurfirst");
@@ -124,7 +123,6 @@ async function performAsuraChapterScraping() {
                 console.log(
                   `${existingStory.title}: Total chapters on site ${totalChapters}, Total chapters in DB ${chapterCount}`
                 );
-                // const chapterDifference = totalChapters - chapterCount;
                 const chapterNumElement = await page.$$(".chapternum");
                 const chapterDateElement = await page.$$(".chapterdate");
                 const monthNames = [
@@ -154,10 +152,8 @@ async function performAsuraChapterScraping() {
                     chapterIndex
                   ].evaluate((el) => el.innerText.trim());
                   const formattedChapterDate = new Date(chapterDate);
-                  //TODO: rip the chapter number down to just the digits
-                  const chapterNumber = chapterNum.split(' ')[1]
+                  const chapterNumber = chapterNum.split(' ')[1].replace('-', ' ').trim()
                   const chapterTitleToFind = `${story.name} ${chapterNumber}`;
-                  // console.log(chapterNumber)
                   let existingChapter = await Chapter.findOne({
                     title: {$regex: new RegExp(`\\b${chapterNumber}\\b`, 'i')},
                     story: existingStory._id
@@ -184,7 +180,7 @@ async function performAsuraChapterScraping() {
 
                     if (uploadedDateString != chapterDate) {
                       console.log(
-                        `Updating ${existingChapter.title}'s uploaded date from ${existingChapter.uploadedDateString} to ${chapterDate}`
+                        `Updating ${existingChapter.title}'s uploaded date to ${chapterDate}`
                       );
                       await Chapter.updateOne(
                         { _id: existingChapter._id },
@@ -193,24 +189,6 @@ async function performAsuraChapterScraping() {
                     }
                   }
                 }
-                // if (chapterDifference !== 0) {
-                //   const chapterIndex = chapterDifference - 1;
-                //   const newChapterLinkElement = await chapterElements[
-                //     chapterIndex
-                //   ].$("a");
-                //   const chapterURL = await page.evaluate(
-                //     (el) => el.href,
-                //     newChapterLinkElement
-                //   );
-                //   try {
-                //     await scrapeChapterData(page, existingStory, chapterURL);
-                //   } catch (error) {
-                //     console.error(
-                //       `Error while scraping chapter ${chapterURL} for ${story.name}:`,
-                //       error
-                //     );
-                //   }
-                // }
                 if (chapterURLArray.length > 0) {
                   for (let i = 0; i < chapterURLArray.length; i++) {
                     await scrapeChapterData(
@@ -339,6 +317,8 @@ async function performAsuraChapterScraping() {
   } catch (error) {
     console.error("Error performing the chapter scraping:", error);
   }
+
+  console.timeEnd("Full Scrape Time")
 }
 
 module.exports = { performAsuraChapterScraping };
